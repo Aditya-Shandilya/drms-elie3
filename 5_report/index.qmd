@@ -1,0 +1,32 @@
+---
+title: "Design of a Delta-Sigma Modulator using open source IIC-OSIC-TOOLS"
+author: 
+  - name: Aditya Ranjan Shandilya
+    email: ashandilya@stud.hs-bremen.de
+    corresponding: true
+    roles: "Lead author"
+    affiliation:
+      - name: Hochschule Bremen - City University of Applied Sciences (HSB)
+        city: Bremen
+        state: Germany
+        url: https://www.hs-bremen.de  
+  - name: Merlin Anitha Athisayaraj
+    email: mathisayaraj@stud.hs-bremen.de
+    corresponding: true
+    roles: "Lead author"
+  - name: Lavina Harris
+    email: lharris@stud.hs-bremen.de
+    corresponding: true
+    roles: "Lead author"
+keyword:
+  - Filter Design 
+  - IC Design
+
+abstract: |
+
+date: last-modified
+number-sections: true
+bibliography: references.bib
+---
+
+{{< include content/_sec_introduction.qmd >}}
