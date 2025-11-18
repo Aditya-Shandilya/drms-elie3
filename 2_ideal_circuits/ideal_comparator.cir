@@ -1,0 +1,3 @@
+.subckt Ideal_comp vinp vinm vout vdd vss
+B_COMP vout vss V = V(vinp) > V(vinm) ? V(vdd) : V(vss)
+.ends Ideal_comp
