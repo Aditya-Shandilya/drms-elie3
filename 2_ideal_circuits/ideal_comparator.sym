@@ -17,10 +17,10 @@ L 4 -80 -80 100 -80 {}
 L 4 100 -80 100 80 {}
 L 4 -80 80 100 80 {}
 L 4 -80 -80 -80 80 {}
-B 5 5.5 -82.5 10.5 -77.5 {name=vdd dir=inout}
-B 5 97.5 -2.5 102.5 2.5 {name=vout dir=out}
-B 5 -82.5 -32.5 -77.5 -27.5 {name=vinn dir=in}
-B 5 -82.5 27.5 -77.5 32.5 {name=vinp dir=in}
+B 5 5.5 -82.5 10.5 -77.5 {name=Vdd dir=inout}
+B 5 97.5 -2.5 102.5 2.5 {name=Vout dir=out}
+B 5 -82.5 -32.5 -77.5 -27.5 {name=Vinn dir=in}
+B 5 -82.5 27.5 -77.5 32.5 {name=Vinp dir=in}
 B 5 5.5 77.5 10.5 82.5 {name=clk dir=inout}
 T {@symname} -45 -6 0 0 0.2 0.2 {}
 T {@name} 61 -94 0 0 0.2 0.2 {}
