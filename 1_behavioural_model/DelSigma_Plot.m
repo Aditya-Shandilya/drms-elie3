@@ -1,6 +1,9 @@
+%% Simulation
+
 simOut = sim('DelSigma_Model');
 logs = simOut.logsout;
 
+%% Data Extraction 
 % Extracting signals from Simulink model, input sine wave, loop-filter, quantizer and
 % DSM output
 u   = squeeze(logs.getElement('inputLog').Values.Data);
@@ -20,6 +23,7 @@ y1   = y(1:Nplot);
 v1   = v(1:Nplot);
 dsm1 = dsm(1:Nplot);
 
+%% Plots
 figure('Name', 'Delta Sigma Modulator 1st Order');
 
 plot(t1, y1, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Loop Filter'); 
