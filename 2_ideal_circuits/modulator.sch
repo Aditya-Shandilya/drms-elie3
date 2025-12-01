@@ -151,7 +151,7 @@ value="
 .control
 option sparse
 .options plotwinsize=0
-.tran 0.1n 40u
+tran 0.1n 40u
 save all
 .endc
 "}
