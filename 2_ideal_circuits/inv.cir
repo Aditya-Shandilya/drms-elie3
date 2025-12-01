@@ -1,0 +1,26 @@
+v {xschem version=3.4.6 file_version=1.2}
+G {}
+K {}
+V {}
+S {}
+E {}
+P 4 1 240 40 {}
+P 4 1 80 -30 {}
+T {.control
+  tran 100ps 200ns
+  plot v(in) v(out)
+.endc} 300 130 0 0 0.4 0.4 {}
+N 150 10 150 40 {lab=out}
+N 150 10 180 10 {lab=out}
+N 20 20 40 20 {lab=vss}
+N 20 20 20 100 {lab=vss}
+N 20 100 150 100 {lab=vss}
+N 280 -20 290 -20 {lab=vdd}
+C {vsource.sym} 150 70 0 0 {name=V1 value=V=v(in)>v(vdd)/2?v(vss):v(vdd) savecurrent=false}
+C {ipin.sym} 80 -30 2 0 {name=vin lab=in}
+C {opin.sym} 180 10 0 0 {name=vout lab=out}
+C {iopin.sym} 40 20 0 0 {name=vss lab=vss}
+C {iopin.sym} 290 -20 0 0 {name=vdd lab=vdd}
+C {vsource.sym} 280 10 0 0 {name=V2 value=5 savecurrent=false}
+C {gnd.sym} 280 40 0 0 {name=l1 lab=GND}
+C {vsource.sym} 80 0 0 0 {name=V3 value=PULSE(0 1.8 0ns 1ns 1ns 50ns 100ns) savecurrent=false}
