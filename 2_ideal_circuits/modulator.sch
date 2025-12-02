@@ -88,17 +88,17 @@ device_model=".MODEL SW1 SW( VT=0.5 VH=0 RON=0.1 ROFF=100M )"}
 C {ideal_opamp.sym} 380 -110 0 0 {name=x1}
 C {capa.sym} 430 -220 3 1 {name=C2
 m=1
-value=\{C\}
+value=\{C2\}
 footprint=1206
 device="ceramic capacitor"}
 C {vsource.sym} -170 -370 0 0 {name=Vin 
-value="SINE(2.5 2.4 500k)" 
+value="SINE(1.5 1.4 1k)" 
 savecurrent=false}
 C {vsource.sym} 110 -370 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 220 -370 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
 C {vsource.sym} 310 -370 0 0 {name=Vcm value=\{Vcm\} savecurrent=false}
-C {vsource.sym} 440 -540 0 0 {name=Vphi1 value="PULSE(0V 5V 0ns 0.1ns 0.1ns 4ns 10ns)" savecurrent=false}
-C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 5V 5ns 0.1ns 0.1ns 4ns 10ns)" savecurrent=false}
+C {vsource.sym} 440 -540 0 0 {name=Vphi1 value="PULSE(0V 3V 0ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vcvs.sym} 10 -380 0 0 {name=Etrip value=\{Etrip\}}
 C {lab_wire.sym} -150 -110 0 0 {name=p1 sig_type=std_logic lab=Vin}
 C {lab_wire.sym} 230 -140 0 0 {name=p2 sig_type=std_logic lab=diff}
@@ -109,7 +109,7 @@ C {lab_wire.sym} 560 -50 0 0 {name=p5 sig_type=std_logic lab=Vcm
 C {lab_wire.sym} 80 110 0 0 {name=p6 sig_type=std_logic lab=Vcm}
 C {capa.sym} -10 0 3 1 {name=C1
 m=1
-value=\{C\}
+value=\{C1\}
 footprint=1206
 device="ceramic capacitor"}
 C {ideal_comparator.sym} 680 -80 0 0 {name=x3}
@@ -130,13 +130,13 @@ C {lab_wire.sym} 50 70 0 0 {name=p14 sig_type=std_logic lab=trip}
 C {lab_wire.sym} 50 -30 0 0 {name=p15 sig_type=std_logic lab=trip}
 C {lab_wire.sym} 50 -50 0 0 {name=p16 sig_type=std_logic lab=phi2}
 C {lab_wire.sym} 290 160 0 0 {name=p17 sig_type=std_logic lab=Vfb}
-C {code_shown.sym} 862 -362 0 0 {name=param only_toplevel=false 
+C {code_shown.sym} 822 -362 0 0 {name=param only_toplevel=false 
 value="
 .param Etrip=0.5
 .param Vref=3
 .param Vdd=3
 .param Vcm=Vdd/2
-.param C=0.25p
+.param C1=0.25p C2=1p
 "}
 C {lab_wire.sym} 688 -190 0 1 {name=p18 sig_type=std_logic lab=Vdd}
 C {launcher.sym} 1030 60 0 0 {name=h2
@@ -150,9 +150,14 @@ value="
 .temp 27
 .control
 option sparse
-.options plotwinsize=0
-tran 0.1n 40u
-save all
+tran 0.1n 5ms 0 20n uic
+save V(Vin) V(Vint) V(out) V(Vcm)
+plot V(Vin) V(Vint) V(out) V(Vcm)
+
+*FFT Analysis
+linearize V(out)
+fft V(out)
+plot db(mag(V(out))) xlimit 10 100k ylimit -80 10
 .endc
 "}
 C {lab_wire.sym} 680 40 0 0 {name=p7 sig_type=std_logic lab=phi1}
