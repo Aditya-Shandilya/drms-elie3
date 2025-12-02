@@ -92,13 +92,13 @@ value=\{C\}
 footprint=1206
 device="ceramic capacitor"}
 C {vsource.sym} -170 -370 0 0 {name=Vin 
-value="SINE(2.5 2.4 500k)" 
+value="SINE(1.5 1.4 1k)" 
 savecurrent=false}
 C {vsource.sym} 110 -370 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 220 -370 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
 C {vsource.sym} 310 -370 0 0 {name=Vcm value=\{Vcm\} savecurrent=false}
-C {vsource.sym} 440 -540 0 0 {name=Vphi1 value="PULSE(0V 5V 0ns 0.1ns 0.1ns 4ns 10ns)" savecurrent=false}
-C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 5V 5ns 0.1ns 0.1ns 4ns 10ns)" savecurrent=false}
+C {vsource.sym} 440 -540 0 0 {name=Vphi1 value="PULSE(0V 3V 0ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vcvs.sym} 10 -380 0 0 {name=Etrip value=\{Etrip\}}
 C {lab_wire.sym} -150 -110 0 0 {name=p1 sig_type=std_logic lab=Vin}
 C {lab_wire.sym} 230 -140 0 0 {name=p2 sig_type=std_logic lab=diff}
@@ -151,7 +151,9 @@ value="
 .control
 option sparse
 .options plotwinsize=0
-tran 0.1n 40u
+tran 0.1n 5ms
+write modulator.raw
+plot v(Vin) v(out) v(Vcm) v(Vint)
 save all
 .endc
 "}
