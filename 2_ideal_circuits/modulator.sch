@@ -98,7 +98,11 @@ C {vsource.sym} 110 -370 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 220 -370 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
 C {vsource.sym} 310 -370 0 0 {name=Vcm value=\{Vcm\} savecurrent=false}
 C {vsource.sym} 440 -540 0 0 {name=Vphi1 value="PULSE(0V 3V 0ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+<<<<<<< HEAD
 C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+=======
+C {vsource.sym} 810 -550 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+>>>>>>> 5e86f747a15b7994c8d7b807f06d773f63ac927c
 C {vcvs.sym} 10 -380 0 0 {name=Etrip value=\{Etrip\}}
 C {lab_wire.sym} -150 -110 0 0 {name=p1 sig_type=std_logic lab=Vin}
 C {lab_wire.sym} 230 -140 0 0 {name=p2 sig_type=std_logic lab=diff}
@@ -150,6 +154,7 @@ value="
 .temp 27
 .control
 option sparse
+<<<<<<< HEAD
 tran 0.1n 5ms 0 20n uic
 save V(Vin) V(Vint) V(out) V(Vcm)
 plot V(Vin) V(Vint) V(out) V(Vcm)
@@ -158,6 +163,13 @@ plot V(Vin) V(Vint) V(out) V(Vcm)
 linearize V(out)
 fft V(out)
 plot db(mag(V(out))) xlimit 10 100k ylimit -80 10
+=======
+.options plotwinsize=0
+tran 0.1n 5ms
+write modulator.raw
+plot v(Vin) v(out) v(Vcm) v(Vint)
+save all
+>>>>>>> 5e86f747a15b7994c8d7b807f06d773f63ac927c
 .endc
 "}
 C {lab_wire.sym} 680 40 0 0 {name=p7 sig_type=std_logic lab=phi1}
