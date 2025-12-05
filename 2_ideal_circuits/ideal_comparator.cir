@@ -1,3 +1,11 @@
-.subckt Ideal_comp vinp vinm vout vdd vss
-B_COMP vout vss V = V(vinp) > V(vinm) ? V(vdd) : V(vss)
-.ends Ideal_comp
+.subckt ideal_comparator Vdd Vout Vinn Vinp clk
+E1 diff GND Vinp Vinn 1
+S1 diff sample tp clk SW1
+E2 net1 GND sample GND 1
+C1 sample GND 100p m=1
+S2 net1 hold clk tp SW1
+C2 hold GND 100p m=1
+B1 Vout GND V={v(hold)>0?v(Vdd):0}
+Etp tp GND Vdd GND 0.5
+.ic v(hold)=1 v(sample)=1
+.ends
