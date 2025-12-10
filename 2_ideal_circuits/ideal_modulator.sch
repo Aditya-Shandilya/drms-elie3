@@ -45,13 +45,19 @@ N 688 -190 688 -160 {lab=Vdd}
 N 688 -0 688 40 {lab=phi1}
 N 680 40 688 40 {lab=phi1}
 N 970 -80 1000 -80 {lab=out}
-N 930 -50 930 -40 {lab=GND}
-N 380 190 380 200 {lab=GND}
+N 380 190 380 210 {lab=vss}
 N 370 110 380 110 {lab=Vref}
 N 380 110 380 130 {lab=Vref}
 N 920 -130 930 -130 {lab=Vdd}
 N 930 -130 930 -110 {lab=Vdd}
 N 410 160 850 160 {lab=cmp}
+N -180 40 -180 50 {lab=phi2}
+N -180 -60 -180 -50 {lab=phi1}
+N 50 -60 50 -50 {lab=phi2}
+N 50 40 50 50 {lab=phi1}
+N 930 -50 930 -26 {lab=vss}
+N 930 -26 940 -26 {lab=vss}
+N 380 210 390 210 {lab=vss}
 C {switch_ngspice.sym} -120 -50 0 0 {name=S1 model=SW1
 device_model=".MODEL SW1 SW( VT=0.5 VH=0 RON=0.1 ROFF=100M )"}
 C {switch_ngspice.sym} -120 50 0 0 {name=S2 model=SW1
@@ -78,23 +84,23 @@ footprint=1206
 device="ceramic capacitor"}
 C {ideal_comparator.sym} 680 -80 0 0 {name=x3}
 C {lab_wire.sym} -180 70 0 0 {name=p12 sig_type=std_logic lab=trip}
-C {lab_wire.sym} 50 50 0 0 {name=p13 sig_type=std_logic lab=phi1}
+C {lab_wire.sym} 50 40 0 0 {name=p13 sig_type=std_logic lab=phi1}
 C {lab_wire.sym} 50 70 0 0 {name=p14 sig_type=std_logic lab=trip}
 C {lab_wire.sym} 50 -30 0 0 {name=p15 sig_type=std_logic lab=trip}
-C {lab_wire.sym} 50 -50 0 0 {name=p16 sig_type=std_logic lab=phi2}
+C {lab_wire.sym} 50 -60 0 0 {name=p16 sig_type=std_logic lab=phi2}
 C {lab_wire.sym} 290 160 0 0 {name=p17 sig_type=std_logic lab=Vfb}
 C {lab_wire.sym} 688 -190 0 1 {name=p18 sig_type=std_logic lab=Vdd}
 C {lab_wire.sym} 680 40 0 0 {name=p7 sig_type=std_logic lab=phi1}
 C {ideal_inverter.sym} 380 160 0 1 {name=x5}
 C {ideal_inverter.sym} 930 -80 0 0 {name=x2}
-C {gnd.sym} 930 -40 0 0 {name=l1 lab=GND}
-C {gnd.sym} 380 200 0 0 {name=l2 lab=GND}
 C {opin.sym} 990 -80 0 0 {name=p29 lab=out}
 C {lab_wire.sym} 880 -80 0 0 {name=p20 sig_type=std_logic lab=cmp}
 C {ipin.sym} -150 -110 0 0 {name=p30 lab=Vin}
-C {ipin.sym} -180 -50 0 0 {name=p1 lab=phi1}
+C {ipin.sym} -180 -60 0 0 {name=p1 lab=phi1}
 C {ipin.sym} -180 -30 0 0 {name=p9 lab=trip}
-C {ipin.sym} -180 50 0 0 {name=p10 lab=phi2}
+C {ipin.sym} -180 40 0 0 {name=p10 lab=phi2}
 C {ipin.sym} 80 110 0 0 {name=p11 lab=Vcm}
 C {ipin.sym} 370 110 0 0 {name=p6 lab=Vref}
 C {ipin.sym} 920 -130 0 0 {name=p28 lab=Vdd}
+C {iopin.sym} 390 210 0 0 {name=p8 lab=vss}
+C {lab_wire.sym} 940 -26 0 1 {name=p19 sig_type=std_logic lab=vss}

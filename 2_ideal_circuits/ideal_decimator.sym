@@ -1,0 +1,21 @@
+v {xschem version=3.4.6 file_version=1.2}
+G {}
+K {type=subcircuit
+format="@name @pinlist @symname samples=\{samples\}"
+template="name=x1"
+spice_sym_def=".include /foss/designs/drms-elie3/2_ideal_circuits/ideal_decimator.cir"}
+V {}
+S {}
+E {}
+L 4 -110 -80 -90 -80 {}
+L 4 -110 -60 -90 -60 {}
+L 4 80 -80 100 -80 {}
+B 5 -112.5 -82.5 -107.5 -77.5 {name=analog_in dir=in}
+B 5 -112.5 -62.5 -107.5 -57.5 {name=analog_clk dir=in}
+B 5 97.5 -82.5 102.5 -77.5 {name=out[9:0] dir=out}
+P 4 5 80 -100 -90 -100 -90 0 80 0 80 -100 {}
+T {@symname} -60 -36 0 0 0.3 0.3 {}
+T {@name} 85 -112 0 0 0.2 0.2 {}
+T {analog_in} -85 -84 0 0 0.2 0.2 {}
+T {out[9:0]} 73 -86 0 1 0.2 0.2 {}
+T {analog_clk} -85 -64 0 0 0.2 0.2 {}

@@ -1,0 +1,109 @@
+* ideal_decimator.cir
+* First-order Sinc Decimator with Analog Interface
+*
+* PARAMETERS:
+* samples = Oversampling Ratio (Default=64). 
+* Passed from Xschem symbol.
+
+.subckt ideal_decimator analog_in analog_clk out[9] out[8] out[7] out[6] out[5] out[4] out[3] out[2] out[1] out[0] samples=64
+
+* ======================================================
+* 1. INTERFACE LAYER (The Wrapper)
+* ======================================================
+
+* --- Analog to Digital Bridges ---
+* Convert 3V Analog signals to Digital (Threshold = 1.5V)
+abridge_data [analog_in] [d_in] my_adc
+abridge_clk  [analog_clk] [d_clk] my_adc
+
+.model my_adc adc_bridge(in_low = 1.5 in_high = 1.5)
+
+* --- Inverter for Differential Input ---
+* FIX: Using a NAND gate as an inverter (NAND(A,A) = NOT(A))
+* This avoids the "Scalar connection expected" error of d_inverter.
+anand_inv [d_in d_in] d_in_b nand1
+
+* ======================================================
+* 2. CORE FILTER LOGIC
+* ======================================================
+
+* Instantiate the Sinc1 Filter
+* Note: Output port names must match the header brackets
+Xsinc d_in d_in_b d_clk out[0] out[1] out[2] out[3] out[4] out[5] out[6] out[7] out[8] out[9] sinc1
+
+* ======================================================
+* 3. INTERNAL SUBCIRCUITS
+* ======================================================
+
+* --- Sinc Filter Structure ---
+.subckt sinc1 din dinb dclk dlout1 dlout2 dlout3 dlout4 dlout5 dlout6 dlout7 dlout8 dlout9 dlout10
+* Accumulator (Counter)
+XCounter din dinb dclk ddivndel2 dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9 dout10 count10
+* Downsampler (Latch)
+Xlatch dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9 dout10
++ dlout1 dlout2 dlout3 dlout4 dlout5 dlout6 dlout7 dlout8 dlout9 dlout10 ddivndel1
++ latch10
+
+* Decimation Clock Divider
+* USES THE EXTERNAL PARAMETER '{samples}' HERE
+adivn dclk ddivn divider
+.model divider d_fdiv(div_factor = {samples} high_cycles = 1 i_count = 0 rise_delay = 1n fall_delay = 1n)
+
+* Timing Delays for Latch/Reset
+adelay ddivn ddivndel1 buff1 
+adelay2 ddivndel1 ddivndel2 buff1
+.model buff1 d_buffer(rise_delay = 10n fall_delay = 10n input_load = 0.5p)
+.ends sinc1
+
+* --- 10-bit Synchronous Counter ---
+.subckt count10 din dinb dclk drs dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9 dout10 
+ajk1 din dinb diclk ds1 drs dout1 dnout1 jkflop
+ajk2 dout1 dout1 diclk ds2 drs dout2 dnout2 jkflop
+ajk3 djk3 djk3 diclk ds3 drs dout3 dnout3 jkflop
+ajk4 djk4 djk4 diclk ds4 drs dout4 dnout4 jkflop
+ajk5 djk5 djk5 diclk ds1 drs dout5 dnout5 jkflop
+ajk6 djk6 djk6 diclk ds2 drs dout6 dnout6 jkflop
+ajk7 djk7 djk7 diclk ds3 drs dout7 dnout8 jkflop
+ajk8 djk8 djk8 diclk ds4 drs dout8 dnout8 jkflop
+ajk9 djk9 djk9 diclk ds3 drs dout9 dnout9 jkflop
+ajk10 djk10 djk10 diclk ds4 drs dout10 dnout10 jkflop
+
+aand1 [dout1 dout2] djk3 and1
+aand2 [dout1 dout2 dout3] djk4 and1
+aand3 [dout1 dout2 dout3 dout4] djk5 and1
+aand4 [dout1 dout2 dout3 dout4 dout5] djk6 and1
+aand5 [dout1 dout2 dout3 dout4 dout5 dout6] djk7 and1
+aand6 [dout1 dout2 dout3 dout4 dout5 dout6 dout7] djk8 and1
+aand7 [dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8] djk9 and1
+aand8 [dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9] djk10 and1
+aand_all [dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9 dout10] dinhibit nand1
+aandclk [dclk dinhibit] diclk and1
+.ends count10
+
+* --- 10-bit Latch ---
+.subckt latch10 din1 din2 din3 din4 din5 din6 din7 din8 din9 din10 dout1 dout2 dout3 dout4 dout5 dout6 dout7 dout8 dout9 dout10 dclk
+aff1 din1 dclk dzero dzero dout1 dnout1 flop1
+aff2 din2 dclk dzero dzero dout2 dnout2 flop1
+aff3 din3 dclk dzero dzero dout3 dnout3 flop1
+aff4 din4 dclk dzero dzero dout4 dnout4 flop1
+aff5 din5 dclk dzero dzero dout5 dnout5 flop1
+aff6 din6 dclk dzero dzero dout6 dnout6 flop1
+aff7 din7 dclk dzero dzero dout7 dnout7 flop1
+aff8 din8 dclk dzero dzero dout8 dnout8 flop1
+aff9 din9 dclk dzero dzero dout9 dnout9 flop1
+aff10 din10 dclk dzero dzero dout10 dnout10 flop1
+.ends latch10
+
+* ======================================================
+* 4. DIGITAL MODELS
+* ======================================================
+
+.model nand1 d_nand(rise_delay = 1e-9 fall_delay = 1e-9 input_load = 0.5e-12)
+
+.model and1 d_and(rise_delay = 1e-9 fall_delay = 1e-9 input_load = 0.5e-12)
+
+.model jkflop d_jkff(clk_delay = 1.0e-9 set_delay = 1e-9 reset_delay = 1e-9 ic = 0 rise_delay = 1.0e-9 fall_delay = 1e-9)
+
+.model flop1 d_dff(clk_delay = 1e-9 set_delay = 0 reset_delay = 0 ic = 0 rise_delay = 1e-9 fall_delay = 1e-9)
+
+.ends ideal_decimator
