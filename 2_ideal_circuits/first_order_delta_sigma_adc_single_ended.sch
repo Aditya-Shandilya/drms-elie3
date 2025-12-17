@@ -49,7 +49,7 @@ savecurrent=false}
 C {vsource.sym} -150 -280 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} -40 -280 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
 C {vsource.sym} 50 -280 0 0 {name=Vcm value=\{Vcm\} savecurrent=false}
-C {vsource.sym} 140 -280 0 0 {name=Vphi1 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+C {vsource.sym} 140 -280 0 0 {name=Vphi1 value="PULSE(0V 3V 0ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vsource.sym} 400 -280 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vcvs.sym} -250 -280 0 0 {name=Etrip value=\{Etrip\}}
 C {lab_wire.sym} -440 -310 0 0 {name=p8 sig_type=std_logic lab=Vin}
@@ -82,7 +82,7 @@ value="
 .param Vdd=3
 .param Vcm=Vdd/2
 .param C1=0.25p C2=1p
-.param samples=32
+.param samples=64
 "}
 C {code_shown.sym} 572 51 0 0 {name=NGSPICE only_toplevel=false 
 value="
@@ -99,7 +99,7 @@ plot V(Vin) V(x1.Vint) V(mod_out)
 *plot db(mag(V(mod_out))) xlimit 1k 500k ylimit -100 10 xlog
 
 *ADC Output
-plot V(Vin) (V(adaccout * 96 -2) (V(adaclout) * 96 - 2)
+plot V(Vin) (V(adaccout)* 48 - 2) (V(adaclout) * 48 - 2)
 .endc
 "}
 C {ideal_modulator.sym} 40 -10 0 0 {name=x1}
