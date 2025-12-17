@@ -92,7 +92,7 @@ value=\{C2\}
 footprint=1206
 device="ceramic capacitor"}
 C {vsource.sym} -50 -340 0 0 {name=Vin 
-value="SINE(1.5 1.4 1k)" 
+value="SINE(1.5 0.7 1k)" 
 savecurrent=false}
 C {vsource.sym} 230 -350 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 340 -350 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
@@ -150,14 +150,14 @@ value="
 .temp 27
 .control
 option sparse
-tran 0.1n 5ms 0 20n uic
+tran 100n 7ms 2ms 20n uic
 save V(Vin) V(Vint) V(out) V(Vcm)
 plot V(Vin) V(Vint) V(out) V(Vcm)
 
 *FFT Analysis
 linearize V(out)
 fft V(out)
-plot db(mag(V(out))) xlimit 10 100k ylimit -80 10
+plot db(mag(V(out))) xlimit 1k 500k ylimit -100 10 xlog
 .endc
 "}
 C {lab_wire.sym} 680 40 0 0 {name=p7 sig_type=std_logic lab=phi1}
