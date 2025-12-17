@@ -40,15 +40,16 @@ N -130 10 -110 10 {lab=trip}
 N -130 30 -110 30 {lab=Vcm}
 N -10 80 -10 90 {lab=GND}
 N 100 -50 190 -50 {lab=mod_out}
-N 400 -50 410 -50 {lab=data[9:0]}
+N 400 -50 420 -50 {lab=adaclout}
 N 170 -30 190 -30 {lab=phi1}
+N 400 -30 420 -30 {lab=adaccout}
 C {vsource.sym} -430 -270 0 0 {name=Vin 
-value="SINE(1.5 1.4 1k)" 
+value="SINE(1.5 0.7 1k)" 
 savecurrent=false}
 C {vsource.sym} -150 -280 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} -40 -280 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
 C {vsource.sym} 50 -280 0 0 {name=Vcm value=\{Vcm\} savecurrent=false}
-C {vsource.sym} 140 -280 0 0 {name=Vphi1 value="PULSE(0V 3V 0ns 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
+C {vsource.sym} 140 -280 0 0 {name=Vphi1 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vsource.sym} 400 -280 0 0 {name=Vphi2 value="PULSE(0V 3V 0.5us 0.1ns 0.1ns 0.4us 1us)" savecurrent=false}
 C {vcvs.sym} -250 -280 0 0 {name=Etrip value=\{Etrip\}}
 C {lab_wire.sym} -440 -310 0 0 {name=p8 sig_type=std_logic lab=Vin}
@@ -81,30 +82,29 @@ value="
 .param Vdd=3
 .param Vcm=Vdd/2
 .param C1=0.25p C2=1p
-.param samples=64
+.param samples=32
 "}
 C {code_shown.sym} 572 51 0 0 {name=NGSPICE only_toplevel=false 
 value="
 .temp 27
 .control
 option sparse
-tran 0.1n 5ms 0 20n uic
-save V(Vin) V(x1.Vint) V(mod_out) V(Vcm) v(data[9]) v(data[8]) v(data[7]) v(data[6]) v(data[5]) v(data[4]) v(data[3]) v(data[2]) v(data[1]) v(data[0])
-plot V(Vin) V(x1.Vint) V(mod_out) V(Vcm)
+tran 100n 10ms 0 20n uic
+save V(Vin) V(x1.Vint) V(mod_out) V(adaclout) V(adaccout)
+plot V(Vin) V(x1.Vint) V(mod_out)
 
 *FFT Analysis
-linearize V(mod_out)
-fft V(mod_out)
-plot db(mag(V(mod_out))) xlimit 10 100k ylimit -80 10
+*linearize V(mod_out)
+*fft V(mod_out)
+*plot db(mag(V(mod_out))) xlimit 1k 500k ylimit -100 10 xlog
 
 *ADC Output
-let digital_val = (v(data[9])*512 + v(data[8])*256 + v(data[7])*128 + v(data[6])*64 + v(data[5])*32 + v(data[4])*16 + v(data[3])*8 + v(data[2])*4 + v(data[1])*2 + v(data[0]))/1024
-let analog_recon = digital_val * 3.0
-plot V(Vin) analog_recon
+plot V(Vin) (V(adaccout * 96 -2) (V(adaclout) * 96 - 2)
 .endc
 "}
 C {ideal_modulator.sym} 40 -10 0 0 {name=x1}
 C {ideal_decimator.sym} 300 30 0 0 {name=x2}
 C {lab_wire.sym} 170 -30 0 0 {name=p9 sig_type=std_logic lab=phi1}
-C {opin.sym} 410 -50 0 0 {name=p10 lab=data[9:0]}
+C {opin.sym} 420 -50 0 0 {name=p10 lab=adaclout}
 C {lab_wire.sym} 170 -50 0 0 {name=p11 sig_type=std_logic lab=mod_out}
+C {opin.sym} 420 -30 0 0 {name=p12 lab=adaccout}
