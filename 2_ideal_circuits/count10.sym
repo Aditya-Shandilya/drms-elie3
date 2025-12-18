@@ -1,0 +1,32 @@
+v {xschem version=3.4.6 file_version=1.2}
+G {}
+K {type=subcircuit
+format="@name @pinlist @symname"
+template="name=x1"}
+V {}
+S {}
+E {}
+L 4 -110 -30 -90 -30 {}
+L 4 -110 -10 -90 -10 {}
+L 4 80 -30 100 -30 {}
+L 4 80 -10 100 -10 {}
+L 4 -110 10 -90 10 {}
+L 4 -110 30 -90 30 {}
+L 4 80 10 100 10 {}
+B 5 -112.5 -32.5 -107.5 -27.5 {name=din dir=in}
+B 5 -112.5 -12.5 -107.5 -7.5 {name=dinb dir=in}
+B 5 97.5 -32.5 102.5 -27.5 {name=dout1 dir=out}
+B 5 97.5 -12.5 102.5 -7.5 {name=through dir=out}
+B 5 -112.5 7.5 -107.5 12.5 {name=dclk dir=in}
+B 5 -112.5 27.5 -107.5 32.5 {name=drs dir=in}
+B 5 97.5 7.5 102.5 12.5 {name=ddffqb dir=out}
+P 4 5 80 -50 -90 -50 -90 50 80 50 80 -50 {}
+T {@symname} -48 24 0 0 0.3 0.3 {}
+T {@name} 85 -62 0 0 0.2 0.2 {}
+T {din} -85 -34 0 0 0.2 0.2 {}
+T {dout1} 73 -36 0 1 0.2 0.2 {}
+T {dinb} -85 -14 0 0 0.2 0.2 {}
+T {through} 73 -16 0 1 0.2 0.2 {}
+T {dclk} -85 6 0 0 0.2 0.2 {}
+T {drs} -85 26 0 0 0.2 0.2 {}
+T {dout10} 35 6 0 0 0.2 0.2 {}
