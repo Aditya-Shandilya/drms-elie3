@@ -16,5 +16,8 @@ data
 *.csv
 *.txt
 /.quarto/
+*.slxc
+slprj/
+*.mat
 
 **/*.quarto_ipynb
