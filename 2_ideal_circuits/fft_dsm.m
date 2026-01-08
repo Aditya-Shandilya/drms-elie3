@@ -1,3 +1,4 @@
+%% Init
 clc;
 clearvars;
 close all;
@@ -7,11 +8,11 @@ close all;
 %% =======================
 fs = 1e6;               % Sampling frequency
 Ts = 1/fs;
-N  = 9001;              % Number of samples
-M  = 512;               % OSR
+M  = 500;               % OSR
+N  = 16 * M;              % Number of samples
 cycles = 5;            % Integer cycles (USED AS-IS)
 A  = 0.8;               % Input amplitude
-fx = 1000;              % Input frequency
+fx = cycles*fs/N;       % Input frequency
 
 Vref = 3;
 Vcm  = Vref/2;
@@ -29,6 +30,11 @@ c = 1;
 modelDir = fullfile(fileparts(pwd), '1_behavioural_model');
 addpath(modelDir);
 modelName = 'dsm_l1_sim';
+
+if bdIsLoaded(modelName)
+    close_system(modelName, 0);   % close WITHOUT saving
+end
+
 load_system(modelName);
 
 sineBlock = find_system(modelName, 'BlockType', 'Sin');
