@@ -1,107 +1,184 @@
-clc; clearvars; close all;
+clc;
+clearvars;
+close all;
 
-filename = fullfile('simulations', 'dsm_data.txt'); 
+%% =======================
+% SIMULATION PARAMETERS
+%% =======================
+fs = 1e6;               % Sampling frequency
+Ts = 1/fs;
+N  = 9001;              % Number of samples
+M  = 512;               % OSR
+cycles = 5;            % Integer cycles (USED AS-IS)
+A  = 0.8;               % Input amplitude
+fx = 1000;              % Input frequency
 
+Vref = 3;
+Vcm  = Vref/2;
+fB   = fs/(2*M);
+
+SamplingFrequency = fs;
+OLgain = 1000;
+a = 1;
+b = [1 1];
+c = 1;
+
+%% =======================
+% LOAD SIMULINK MODEL
+%% =======================
+modelDir = fullfile(fileparts(pwd), '1_behavioural_model');
+addpath(modelDir);
+modelName = 'dsm_l1_sim';
+load_system(modelName);
+
+sineBlock = find_system(modelName, 'BlockType', 'Sin');
+if ~isempty(sineBlock)
+    set_param(sineBlock{1}, 'Frequency', num2str(2*pi*fx));
+    set_param(sineBlock{1}, 'SampleTime', num2str(Ts));
+    set_param(sineBlock{1}, 'Amplitude', num2str(A));
+end
+
+filterBlock = find_system(modelName, 'BlockType', 'DiscreteFilter');
+if ~isempty(filterBlock)
+    set_param(filterBlock{1}, 'SampleTime', num2str(Ts));
+end
+
+%% =======================
+% RUN BEHAVIORAL SIMULATION
+%% =======================
+fprintf('Running Behavioral Simulation...\n');
+
+T_stop = (N-1)*Ts;
+in = Simulink.SimulationInput(modelName);
+in = in.setVariable('OLgain', OLgain);
+in = in.setVariable('a', a);
+in = in.setVariable('b', b);
+in = in.setVariable('c', c);
+in = in.setVariable('SamplingFrequency', fs);
+in = in.setModelParameter('StopTime', num2str(T_stop));
+
+simOut = sim(in);
+logs = simOut.logsout;
+
+dsm = squeeze(logs.getElement('dsmLog').Values.Data);
+dsm = dsm(1:N);
+
+%% =======================
+% LOAD CIRCUIT DATA
+%% =======================
+fprintf('Processing Circuit Data...\n');
+
+filename = fullfile('simulations', 'dsm_data.txt');
 if ~isfile(filename)
-    error('File not found! Make sure "dsm_output.txt" is inside the "simulations" folder.');
+    warning('Circuit data not found.');
+    dsm_circuit = [];
+else
+    data = readmatrix(filename);
+
+    t_raw = data(:,5);
+    v_raw = data(:,6);
+
+    [t_unique, idx] = unique(t_raw);
+    v_unique = v_raw(idx);
+
+    t_start = 1e-3;  % settling
+    t_uniform = t_start + (0:N-1)'*Ts;
+
+    v_interp = interp1(t_unique, v_unique, t_uniform, 'nearest', 'extrap');
+
+    % Comparator → ±1 (MATCH Simulink)
+    dsm_circuit = double(v_interp > Vcm);
+    dsm_circuit(dsm_circuit == 0) = -1;
+
+    % Remove DC
+    dsm_circuit = dsm_circuit - mean(dsm_circuit);
 end
 
-% --- PARAMETERS ---
-Fs = 1e6;         % Sampling Freq = 1 MHz
-Fin = 1e3;        % Input Freq = 1 kHz
-OSR = 64;         % Oversampling Ratio
-
-% Import Data
-data = readmatrix(filename);
-t_raw = data(:, 5);
-v_raw = data(:, 6);
-
-% --- Remove Duplicate Time Points ---
-[t_unique, unique_idx] = unique(t_raw); 
-v_unique = v_raw(unique_idx);
-
-Ts = 1/Fs;
-
-% We skip the first 1ms (1000 samples) to let the loop settle.
-startup_delay = 1e-3; 
-start_time = max(0.9*Ts, min(t_unique));
-
-if start_time < startup_delay
-    start_time = startup_delay;
+%% =======================
+% TIME DOMAIN COMPARISON
+%% =======================
+figure('Name','DSM Time Domain Comparison');
+stairs(dsm(1:200),'b','LineWidth',1.5); hold on;
+if ~isempty(dsm_circuit)
+    stairs(dsm_circuit(1:200),'r--','LineWidth',1.5);
 end
-
-t_clk = start_time : Ts : (max(t_unique)); 
-
-% Interpolate
-v_sampled_analog = interp1(t_unique, v_unique, t_clk, 'nearest');
-v = (v_sampled_analog > 1.5) * 2 - 1; 
-N = length(v); 
-
-% Hann window to fix leakage and sum noise ONLY in-band.
-
-% Create Window
-w = hann(N)'; 
-v_windowed = v .* w;
-
-% FFT with Window Normalization
-sq = abs(fft(v_windowed));
-norm_factor = sum(w) / 2; % Normalize for single-sided amplitude
-
-% Single-Sided Spectrum
-sq_hlf = sq(1:floor(N/2)) / norm_factor; 
-
-% Convert to dBFS
-sqdBFS = 20*log10(sq_hlf);
-sqdBFS(isinf(sqdBFS)) = -150; 
-
-% --- SNR Calculation (In-Band Only) ---
-Bandwidth = Fs / (2 * OSR); 
-
-target_bin = round((Fin/Fs) * N) + 1;
-bw_bin = floor((Bandwidth/Fs) * N) + 1;
-
-signal_power = sq_hlf(target_bin)^2;
-
-%    Noise Power (In-Band)
-%    From Bin 2 (skip DC) up to Bandwidth Bin, EXCLUDING the signal
-span = 2; % Skip 2 bins around signal to avoid leakage power
-in_band_bins = 2:bw_bin;
-signal_region = (target_bin-span):(target_bin+span);
-
-% Remove signal indices from the noise list
-noise_indices = setdiff(in_band_bins, signal_region);
-
-% Sum noise ONLY in the baseband
-noise_power = sum(sq_hlf(noise_indices).^2);
-
-snr = 10*log10(signal_power / noise_power);
-
-fprintf('------------------------------------------\n');
-fprintf('Final Analysis Results:\n');
-fprintf('------------------------------------------\n');
-fprintf('Number of Samples (N): %d\n', N);
-fprintf('Signal Detected at:    %.2f Hz\n', (target_bin-1)*Fs/N);
-fprintf('In-Band Limit:         %.2f Hz (Bin %d)\n', Bandwidth, bw_bin);
-fprintf('Calculated SNR:        %.2f dB\n', snr);
-fprintf('ENOB:                  %.2f bits\n', (snr-1.76)/6.02);
-fprintf('------------------------------------------\n');
-
-fig4 = figure(4);
-set(gca, 'fontsize', 14);
-
-% Frequency Axis
-f_axis = (0:N/2-1) * (Fs/N);
-
-semilogx(f_axis, sqdBFS, 'LineWidth', 1);
-
-xlabel('Frequency (Hz)');
-ylabel('DFT Magnitude in dBFS');
-title(['FFT (SNR = ' num2str(snr, '%.1f') ' dB, ENOB = ' num2str((snr-1.76)/6.02, '%.1f') ')']);
 grid on;
-xlim([100 Fs/2]); 
-ylim([-150 10]);
+xlabel('Sample Index');
+ylabel('Amplitude');
+legend('Behavioral','Circuit');
+title('DSM Output (First 200 Samples)');
 
+%% =======================
+% FFT & SNR (BEHAVIORAL)
+%% =======================
+w = hann(N);
+norm_factor = sum(w);
+
+Nfft = floor(N/2);
+
+dsm_w = dsm .* w;
+X = abs(fft(dsm_w));
+X_mag = X(1:Nfft)*2/norm_factor;
+X_db  = 20*log10(X_mag + eps);
+
+bin_sig = 1 + cycles;
+bin_bw  = floor(fB*N/fs);
+
+span = 1;
+sig_idx = (bin_sig-span):(bin_sig+span);
+noise_idx = 2:bin_bw;
+noise_idx = setdiff(noise_idx, sig_idx);
+
+P_sig = sum(X_mag(sig_idx).^2);
+P_noise = sum(X_mag(noise_idx).^2);
+SNR_dB = 10*log10(P_sig/P_noise);
+
+fprintf('\n--- BEHAVIORAL RESULTS ---\n');
+fprintf('Signal Power: %.2f dB\n',10*log10(P_sig));
+fprintf('Noise Power:  %.2f dB\n',10*log10(P_noise));
+fprintf('SNR:          %.2f dB\n',SNR_dB);
+
+%% =======================
+% FFT & SNR (CIRCUIT)
+%% =======================
+if ~isempty(dsm_circuit)
+
+    dsmc_w = dsm_circuit .* w;
+    Xc = abs(fft(dsmc_w));
+    Xc_mag = Xc(1:Nfft)*2/norm_factor;
+    Xc_db  = 20*log10(Xc_mag + eps);
+
+    P_sig_c = sum(Xc_mag(sig_idx).^2);
+    P_noise_c = sum(Xc_mag(noise_idx).^2);
+    SNR_c_dB = 10*log10(P_sig_c/P_noise_c);
+
+    fprintf('\n--- CIRCUIT RESULTS ---\n');
+    fprintf('Signal Power: %.2f dB\n',10*log10(P_sig_c));
+    fprintf('Noise Power:  %.2f dB\n',10*log10(P_noise_c));
+    fprintf('SNR:          %.2f dB\n',SNR_c_dB);
+end
+
+%% =======================
+% PSD COMPARISON PLOT
+%% =======================
+f_axis = (0:Nfft-1)*(fs/N);
+
+figure('Name','DSM PSD Comparison');
+semilogx(f_axis, X_db, 'b','LineWidth',1.5,...
+    'DisplayName',sprintf('Behavioral (SNR %.1f dB)',SNR_dB));
 hold on;
-xline(Fin, '--g', 'Input Tone');
-xline(Bandwidth, '--r', 'Bandwidth Limit', 'LabelVerticalAlignment', 'bottom');
-legend('Spectrum', 'Input Signal', 'Noise Integration Limit');
+
+if ~isempty(dsm_circuit)
+    semilogx(f_axis, Xc_db, 'r','LineWidth',1.5,...
+        'DisplayName',sprintf('Circuit (SNR %.1f dB)',SNR_c_dB));
+end
+
+xline(fB,'--y','LineWidth',2,'Label','Bandwidth');
+xline(fx,'--g','LineWidth',1.5,'Label','Signal');
+grid on;
+xlim([f_axis(2) fs/2]);
+ylim([-160 10]);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title(['DSM PSD Comparison (OSR = ' num2str(M) ')']);
+legend('show','Location','southwest');
