@@ -1,13 +1,14 @@
+%% Init
 clc;
 clearvars;
 close all;
 
-% Simulation Parameters
-fs = 1e6;               %Sampling frequency
+%% Simulation Parameters
+fs = 1e6;               % Sampling frequency
 Ts = 1/fs;              % Time step
-N  = 9001;             % Simulation length
-M  = 512;                % Oversampling Ratio
-cycles = 10;            % Number of signal cycles 
+N  = 9001;              % Simulation length
+M  = 512;               % Oversampling Ratio
+cycles = 5;            % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
 
@@ -20,14 +21,15 @@ a = 1;                % Feedforward
 b = [1 1];            % Feedback
 c = 1;                % Integrator
 
-% This section fixes the "Negative SNR" by forcing Simulink to use our fs and fx
+%% This section fixes the "Negative SNR" by forcing Simulink to use our fs and fx
 modelName = 'dsm_l1_sim';
 load_system(modelName);
+%open_system(modelName);
 
 % Find blocks safely (handles potential name variations)
 sineBlock = find_system(modelName, 'BlockType', 'Sin');
 if ~isempty(sineBlock)
-    set_param(sineBlock{1}, 'Frequency', num2str(2 * pi * fx)); 
+    set_param(sineBlock{1}, 'Frequency', num2str(2 * pi * fx));
     set_param(sineBlock{1}, 'SampleTime', num2str(Ts));
     set_param(sineBlock{1}, 'Amplitude', num2str(A));
 end
@@ -49,13 +51,18 @@ in = in.setVariable('OLgain', OLgain);
 in = in.setVariable('a', a);
 in = in.setVariable('b', b);
 in = in.setVariable('c', c);
-in = in.setVariable('SamplingFrequency', SamplingFrequency);
+in = in.setVariable('SamplingFrequency', fs);
 
 % Set the stop time via the object
 in = in.setModelParameter('StopTime', num2str(T_stop));
 
 simOut = sim(in);
 logs = simOut.logsout;
+
+% Extract outputs
+dsmOut = simOut.yout.get('dsmOut').Values.Data;
+filterOut = simOut.yout.get('filterOut').Values.Data;
+quantOut = simOut.yout.get('quantOut').Values.Data;
 
 % Extract exactly N samples
 u   = squeeze(logs.getElement('inputLog').Values.Data);
