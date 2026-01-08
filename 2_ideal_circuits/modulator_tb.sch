@@ -1,9 +1,8 @@
-v {xschem version=3.4.8RC file_version=1.3}
+v {xschem version=3.4.6 file_version=1.2}
 G {}
 K {}
 V {}
 S {}
-F {}
 E {}
 L 4 80 0 100 0 {}
 L 4 100 -80 100 80 {}
@@ -93,7 +92,7 @@ value=\{C2\}
 footprint=1206
 device="ceramic capacitor"}
 C {vsource.sym} -50 -340 0 0 {name=Vin 
-value="SINE(1.5 0.8 1k)" 
+value="SINE(1.5 0.8 625)" 
 savecurrent=false}
 C {vsource.sym} 230 -350 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 340 -350 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
