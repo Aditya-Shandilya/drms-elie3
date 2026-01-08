@@ -44,7 +44,7 @@ N 400 -50 420 -50 {lab=adaclout}
 N 170 -30 190 -30 {lab=phi1}
 N 400 -30 420 -30 {lab=adaccout}
 C {vsource.sym} -430 -280 0 0 {name=Vin 
-value="SINE(1.5 1.2 1k)" 
+value="SINE(1.5 0.8 625)" 
 savecurrent=false}
 C {vsource.sym} -150 -280 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} -40 -280 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
@@ -82,7 +82,7 @@ value="
 .param Vdd=3
 .param Vcm=Vdd/2
 .param C1=1p C2=1p
-.param samples=512
+.param samples=500
 "}
 C {code_shown.sym} 572 51 0 0 {name=NGSPICE only_toplevel=false 
 value="

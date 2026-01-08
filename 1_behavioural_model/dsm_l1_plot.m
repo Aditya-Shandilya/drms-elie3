@@ -6,8 +6,8 @@ close all;
 %% Simulation Parameters
 fs = 1e6;               % Sampling frequency
 Ts = 1/fs;              % Time step
-N  = 9001;              % Simulation length
-M  = 512;               % Oversampling Ratio
+M  = 500;               % Oversampling Ratio
+N  = 16*M;              % Simulation length
 cycles = 5;            % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
@@ -15,7 +15,6 @@ offset = 0;
 fx = cycles * fs / N;   % Input frequency 
 fB = fs / (2 * M);      % Signal Bandwidth
 
-SamplingFrequency = fs; 
 OLgain = 1000;        % Open Loop Gain
 a = 1;                % Feedforward
 b = [1 1];            % Feedback
