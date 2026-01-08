@@ -82,7 +82,7 @@ value="
 .param Vdd=3
 .param Vcm=Vdd/2
 .param C1=1p C2=1p
-.param samples=64
+.param samples=512
 "}
 C {code_shown.sym} 572 51 0 0 {name=NGSPICE only_toplevel=false 
 value="
@@ -90,12 +90,13 @@ value="
 .control
 option sparse
 tran 100n 10ms 0 20n uic
-save V(Vin) V(x1.Vint) V(mod_out) V(adaclout) V(adaccout)
+save V(Vin) V(x1.Vint) V(mod_out) 
+*save V(adaclout) V(adaccout)
 wrdata dsm_data.txt V(Vin) V(x1.Vint) V(mod_out)
 plot V(Vin) V(x1.Vint) V(mod_out)
 
 *ADC Output
-plot V(Vin) (V(adaccout)* 48 - 2) (V(adaclout) * 48 - 2)
+*plot V(Vin) V(adaccout) V(adaclout)
 
 .endc
 "}
