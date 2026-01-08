@@ -9,7 +9,7 @@ v_in = data(:,2);        % Input (Blue)
 v_int = data(:,4);       % Integrator (Green)
 v_out = data(:,6);       % Bitstream (Red)
 
-figure('Name', 'Delta Sigma Modulator (Simulink Style)');
+figure('Name', 'Delta Sigma Modulator');
 hold on;
 box on;
 
