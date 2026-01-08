@@ -1,8 +1,9 @@
-v {xschem version=3.4.6 file_version=1.2}
+v {xschem version=3.4.8RC file_version=1.3}
 G {}
 K {}
 V {}
 S {}
+F {}
 E {}
 L 4 80 0 100 0 {}
 L 4 100 -80 100 80 {}
@@ -92,7 +93,7 @@ value=\{C2\}
 footprint=1206
 device="ceramic capacitor"}
 C {vsource.sym} -50 -340 0 0 {name=Vin 
-value="SINE(1.5 0.7 1k)" 
+value="SINE(1.5 0.8 1k)" 
 savecurrent=false}
 C {vsource.sym} 230 -350 0 0 {name=Vref value=\{Vref\} savecurrent=false}
 C {vsource.sym} 340 -350 0 0 {name=Vdd value=\{Vdd\} savecurrent=false}
@@ -151,13 +152,13 @@ value="
 .control
 option sparse
 tran 100n 7ms 2ms 20n uic
-save V(Vin) V(Vint) V(out) V(Vcm)
-plot V(Vin) V(Vint) V(out) V(Vcm)
+save V(Vin) V(Vint) V(out) 
+plot V(Vin) V(out)
 
 *FFT Analysis
 linearize V(out)
 fft V(out)
-plot db(mag(V(out))) xlimit 1k 500k ylimit -100 10 xlog
+plot db(mag(V(out))) xlimit 1 500k ylimit -100 10 xlog
 .endc
 "}
 C {lab_wire.sym} 680 40 0 0 {name=p7 sig_type=std_logic lab=phi1}
