@@ -41,7 +41,6 @@ C {devices/ipin.sym} 130 0 2 0 {name=p4 lab=phi_b
 C {devices/ipin.sym} -130 0 0 0 {name=p3 lab=phi}
 C {devices/ipin.sym} -130 -40 2 1 {name=p1 lab=a pinnumber=1
 }
-C {devices/ipin.sym} -130 40 2 1 {name=p2 lab=b
-}
 C {devices/ipin.sym} -130 -80 0 0 {name=p5 lab=vdd}
 C {devices/iopin.sym} -130 80 0 1 {name=p6 lab=vss}
+C {devices/iopin.sym} -130 40 0 1 {name=p2 lab=b}

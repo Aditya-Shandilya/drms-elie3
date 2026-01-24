@@ -4,16 +4,16 @@ K {}
 V {}
 S {}
 E {}
-N -530 120 -400 120 {lab=vop}
+N -530 120 -400 120 {lab=#net1}
 N -230 -70 -110 -70 {lab=vop}
-N -110 120 80 120 {lab=vop}
+N -110 120 80 120 {lab=#net2}
 N 80 -70 220 -70 {lab=vop}
-N 80 120 220 120 {lab=vop}
-N 500 -70 640 -70 {lab=vop}
-N 500 120 640 120 {lab=vop}
-N 390 120 500 120 {lab=vop}
-N 810 -70 830 -70 {lab=vop}
-N 810 120 830 120 {lab=vop}
+N 80 120 220 120 {lab=#net2}
+N 500 -70 640 -70 {lab=#net3}
+N 500 120 640 120 {lab=#net4}
+N 390 120 500 120 {lab=#net4}
+N 810 -70 830 -70 {lab=vcm}
+N 810 120 830 120 {lab=vbiasn}
 N -730 200 -730 220 {lab=vss}
 N -920 220 -730 220 {lab=vss}
 N -730 220 -310 220 {lab=vss}
@@ -28,14 +28,14 @@ N -730 30 -310 30 {lab=vss}
 N -310 10 -310 30 {lab=vss}
 N -110 -70 -110 -50 {lab=vop}
 N -310 30 310 30 {lab=vss}
-N 80 10 80 120 {lab=vop}
+N 80 10 80 120 {lab=#net2}
 N 310 10 310 30 {lab=vss}
-N 500 10 500 120 {lab=vop}
+N 500 10 500 120 {lab=#net4}
 N 730 10 730 30 {lab=vss}
 N 310 30 730 30 {lab=vss}
 N 80 -70 80 -50 {lab=vop}
-N 500 -70 500 -50 {lab=vop}
-N 390 -70 500 -70 {lab=vop}
+N 500 -70 500 -50 {lab=#net3}
+N 390 -70 500 -70 {lab=#net3}
 N -920 30 -730 30 {lab=vss}
 N -920 30 -920 220 {lab=vss}
 N -930 220 -920 220 {lab=vss}
@@ -77,16 +77,15 @@ N 620 -50 640 -50 {lab=phi1}
 N 620 -30 640 -30 {lab=phi1_b}
 N 620 140 640 140 {lab=phi1}
 N 620 160 640 160 {lab=phi1_b}
-N -530 10 -530 120 {lab=vop}
-N -650 120 -530 120 {lab=vop}
+N -530 10 -530 120 {lab=#net1}
+N -650 120 -530 120 {lab=#net1}
 N -530 -70 -530 -50 {lab=vop}
 N -650 -70 -530 -70 {lab=vop}
 N -530 -70 -400 -70 {lab=vop}
 N -110 -70 80 -70 {lab=vop}
-N -110 10 -110 120 {lab=vop}
-N -230 120 -110 120 {lab=vop}
+N -110 10 -110 120 {lab=#net2}
+N -230 120 -110 120 {lab=#net2}
 N -110 -150 -110 -70 {lab=vop}
-C {tg_hv.sym} -730 -50 0 0 {name=x1}
 C {devices/ipin.sym} -930 -70 0 0 {name=p20 lab=vcm}
 C {sg13g2_pr/cap_cmim.sym} -530 -20 0 1 {name=C1
 model=cap_cmim
@@ -94,31 +93,24 @@ w=7.0e-6
 l=7.0e-6
 m=1
 spiceprefix=X}
-C {tg_hv.sym} -730 140 0 0 {name=x2}
-C {tg_hv.sym} -310 -50 0 0 {name=x3}
 C {sg13g2_pr/cap_cmim.sym} -110 -20 0 0 {name=C3
 model=cap_cmim
 w=7.0e-6
 l=7.0e-6
 m=1
 spiceprefix=X}
-C {tg_hv.sym} -310 140 0 0 {name=x4}
 C {sg13g2_pr/cap_cmim.sym} 80 -20 0 0 {name=C4
 model=cap_cmim
 w=7.0e-6
 l=7.0e-6
 m=1
 spiceprefix=X}
-C {tg_hv.sym} 310 -50 0 0 {name=x5}
-C {tg_hv.sym} 310 140 0 0 {name=x6}
 C {sg13g2_pr/cap_cmim.sym} 500 -20 0 0 {name=C2
 model=cap_cmim
 w=7.0e-6
 l=7.0e-6
 m=1
 spiceprefix=X}
-C {tg_hv.sym} 730 -50 0 0 {name=x7}
-C {tg_hv.sym} 730 140 0 0 {name=x8}
 C {devices/ipin.sym} -930 120 0 0 {name=p4 lab=vbiasn}
 C {devices/ipin.sym} -120 -150 0 0 {name=p8 lab=vop}
 C {devices/ipin.sym} 90 -150 0 1 {name=p5 lab=von}
@@ -142,3 +134,5 @@ C {lab_wire.sym} 620 -50 0 0 {name=p18 sig_type=std_logic lab=phi1}
 C {lab_wire.sym} 620 -30 0 0 {name=p19 sig_type=std_logic lab=phi1_b}
 C {lab_wire.sym} 620 140 0 0 {name=p21 sig_type=std_logic lab=phi1}
 C {lab_wire.sym} 620 160 0 0 {name=p24 sig_type=std_logic lab=phi1_b}
+C {tg_hv.sym} -730 -50 0 0 {name=x1}
+C {tg_hv.sym} -310 -50 0 0 {name=x2}

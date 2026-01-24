@@ -81,14 +81,10 @@ N -320 -240 -0 -240 {lab=vbias_p_casc}
 N 0 -240 0 -170 {lab=vbias_p_casc}
 N -140 -170 0 -170 {lab=vbias_p_casc}
 N -140 170 -120 170 {lab=vbias_n_sink}
-N -120 150 -120 170 {lab=vbias_n_sink}
-N -120 150 -70 150 {lab=vbias_n_sink}
-N -70 120 -70 150 {lab=vbias_n_sink}
-N -70 120 110 120 {lab=vbias_n_sink}
-N -90 170 -40 170 {lab=vbias_n_tail}
-N -90 120 -90 170 {lab=vbias_n_tail}
-N 110 120 320 120 {lab=vbias_n_sink}
-N -320 120 -90 120 {lab=vbias_n_tail}
+N -120 120 110 120 {lab=vbias_n_sink}
+N -120 120 -120 170 {lab=vbias_n_sink}
+N -120 170 -40 170 {lab=vbias_n_sink}
+N -320 120 -120 120 {lab=vbias_n_sink}
 C {devices/ipin.sym} -320 -50 0 0 {name=p7 lab=inp}
 C {devices/ipin.sym} 260 -50 0 1 {name=p5 lab=inn}
 C {devices/iopin.sym} -320 220 0 1 {name=p15 lab=vss}
@@ -98,8 +94,7 @@ C {devices/opin.sym} 260 -100 0 0 {name=p2 lab=outp}
 C {devices/ipin.sym} -320 20 0 0 {name=p4 lab=vbias_n_casc}
 C {devices/ipin.sym} -320 -240 0 0 {name=p8 lab=vbias_p_casc}
 C {devices/ipin.sym} -320 -400 0 0 {name=p9 lab=vbias_p_src}
-C {devices/ipin.sym} 320 120 0 1 {name=p3 lab=vbias_n_sink}
-C {devices/ipin.sym} -320 120 0 0 {name=p10 lab=vbias_n_tail}
+C {devices/ipin.sym} -320 120 0 0 {name=p3 lab=vbias_n_sink}
 C {sg13g2_pr/sg13_hv_nmos.sym} -110 -50 0 0 {name=M1
 l=0.45u
 w=0.3u
