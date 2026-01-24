@@ -4,6 +4,8 @@ clearvars;
 close all;
 
 %% Simulation Parameters
+L=2;
+form='CIFB';
 fs = 1e6;               % Sampling frequency
 Ts = 1/fs;              % Time step
 M  = 500;               % Oversampling Ratio
@@ -16,12 +18,13 @@ fx = cycles * fs / N;   % Input frequency
 fB = fs / (2 * M);      % Signal Bandwidth
 
 OLgain = 1000;        % Open Loop Gain
-a = 1;                % Feedforward
-b = [1 1];            % Feedback
-c = 1;                % Integrator
+
+%%Calculating the coefficients
+H = synthesizeNTF(L, M);
+[a, g, b, c] = realizeNTF(H, form);
 
 %% This section forces Simulink to use our fs and fx
-modelName = 'dsm_l1_sim';
+modelName = 'dsm_l2_sim';
 load_system(modelName);
 %open_system(modelName);
 
@@ -52,6 +55,7 @@ in = in.setVariable('OLgain', OLgain);
 in = in.setVariable('a', a);
 in = in.setVariable('b', b);
 in = in.setVariable('c', c);
+in = in.setVariable('g', g);
 in = in.setVariable('SamplingFrequency', fs);
 
 % Set the stop time via the object
@@ -65,30 +69,30 @@ dsmOut = simOut.yout.get('dsmOut').Values.Data;
 filterOut = simOut.yout.get('filterOut').Values.Data;
 quantOut = simOut.yout.get('quantOut').Values.Data;
 
-% Extract samples
+% Extract samples, convert "3-D" signals to "1-D" vector
 u   = squeeze(logs.getElement('inputLog').Values.Data);
-y   = squeeze(logs.getElement('filterLog').Values.Data);
-v   = squeeze(logs.getElement('quantLog').Values.Data);
-dsm = squeeze(logs.getElement('dsmLog').Values.Data);
+%y   = squeeze(logs.getElement('filterLog').Values.Data);
+%v   = squeeze(logs.getElement('quantLog').Values.Data);
+%dsm = squeeze(logs.getElement('dsmLog').Values.Data);
 t   = logs.getElement('inputLog').Values.Time;
 
 % Calculate points to plot to show ~1.5ms (trying to zoom-in)
-N_plot = ceil(1.5e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
+N_plot = ceil(1.7e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
 if length(t) < N_plot, N_plot = length(t); end
 
 %Using values till N_plot for better graph visualisation
 t1   = t(1:N_plot);
-u1   = u(1:N_plot);
-y1   = y(1:N_plot);
-v1   = v(1:N_plot);
-dsm1 = dsm(1:N_plot);
+filterOut1   = filterOut(1:N_plot);
+dsmOut1   = dsmOut(1:N_plot);
+quantOut1   = quantOut(1:N_plot);
+u1 = u(1:N_plot);
 
 %% Plotting 
 figure('Name', 'Delta Sigma modulator', 'Color', 'w');
 
-plot(t1, y1, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Loop Filter'); 
+plot(t1, filterOut1, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Loop Filter'); 
 hold on;
-stairs(t1, v1, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Comparator');
+stairs(t1, quantOut1, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Comparator');
 plot(t1, u1, 'b-', 'LineWidth', 2.5, 'DisplayName', 'Input Signal');
 
 grid on;
@@ -104,16 +108,16 @@ xlim([0 t1(end)]);
 %grid on;
 %title('Delta Sigma modulator (Simulink Output)');
 %xlabel('Time (s)');
-ylabel('DSM');
-legend('show', 'Location', 'northeast');
-ylim([-2 2]);
-xlim([0 t1(end)]);
+%ylabel('DSM');
+%legend('show', 'Location', 'northeast');
+%ylim([-2 2]);
+%xlim([0 t1(end)]);
 
-%% Spectral Analysis & SNR Calculation
+%% Spectral Analysis & SNR Calculation (Using Hann Windowing)
 
 % Windowing (Hann window to suppress spectral leakage)
 w = hann(N);
-dsm_windowed = dsm .* w;
+dsm_windowed = dsmOut .* w;
 
 % FFT Calculation
 % Calculate normalization factor for window
@@ -150,6 +154,11 @@ fprintf('Signal Bandwidth:  %.2f Hz (Bin %d)\n', fB, bin_bw);
 fprintf('Signal Power:      %.2f dB\n', 10*log10(P_signal));
 fprintf('In-Band Noise:     %.2f dB\n', 10*log10(P_noise));
 fprintf('CALCULATED SNR:    %.2f dB\n', SNR_dB);
+
+fprintf('Coefficient a:      %d \n', a);
+fprintf('Coefficient b:      %d \n', b);
+fprintf('Coefficient c:      %d \n', c);
+fprintf('Coefficient g:      %d \n', g);
 
 f_axis = (0:N/2-1) * (fs / N);
 figure('Name', 'DSM Power Spectral Density');
