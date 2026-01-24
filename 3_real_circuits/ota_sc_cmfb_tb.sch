@@ -71,7 +71,7 @@ value="
 .control
 save all
 op
-tran 10n 5m
+tran 10n 2m
 plot outp outn
 plot v_feedback
 .endc
@@ -96,7 +96,7 @@ C {clk_gen.sym} 220 10 0 0 {name=x3}
 C {lab_wire.sym} -420 -60 0 1 {name=p2 sig_type=std_logic lab=inp}
 C {lab_wire.sym} 190 -110 0 0 {name=p7 sig_type=std_logic lab=vdd}
 C {lab_wire.sym} -420 -40 0 1 {name=p9 sig_type=std_logic lab=inn}
-C {vsource.sym} 10 250 0 0 {name=VCLK value=PULSE"PULSE(0 3 0 1n 1n 500n 1u)" savecurrent=false}
+C {vsource.sym} 10 250 0 0 {name=VCLK value="PULSE(0 3 0 1n 1n 500n 1u)" savecurrent=false}
 C {lab_wire.sym} 20 -20 0 1 {name=p10 sig_type=std_logic lab=clk_in}
 C {lab_pin.sym} 10 200 0 0 {name=p11 sig_type=std_logic lab=clk_in}
 C {gnd.sym} 10 290 0 0 {name=l3 lab=GND}
