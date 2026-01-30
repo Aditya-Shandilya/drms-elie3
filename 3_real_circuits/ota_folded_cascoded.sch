@@ -183,3 +183,19 @@ m=1
 model=sg13_hv_nmos
 spiceprefix=X
 }
+C {sg13g2_pr/annotate_fet_params.sym} 340 -340 0 0 {name=annot4 ref=M10}
+C {sg13g2_pr/annotate_fet_params.sym} 460 -340 0 0 {name=annot1 ref=M10}
+C {sg13g2_pr/annotate_fet_params.sym} 340 -210 0 0 {name=annot2 ref=M8}
+C {sg13g2_pr/annotate_fet_params.sym} 460 -210 0 0 {name=annot3 ref=M9}
+C {sg13g2_pr/annotate_fet_params.sym} 340 -80 0 0 {name=annot5 ref=M1}
+C {sg13g2_pr/annotate_fet_params.sym} 460 -80 0 0 {name=annot6 ref=M2}
+C {sg13g2_pr/annotate_fet_params.sym} 340 50 0 0 {name=annot7 ref=M6}
+C {sg13g2_pr/annotate_fet_params.sym} 460 50 0 0 {name=annot8 ref=M7}
+C {sg13g2_pr/annotate_fet_params.sym} 340 180 0 0 {name=annot9 ref=M4}
+C {sg13g2_pr/annotate_fet_params.sym} 460 180 0 0 {name=annot10 ref=M3}
+C {sg13g2_pr/annotate_fet_params.sym} 580 180 0 0 {name=annot11 ref=M5}
+C {ngspice_probe.sym} -180 -220 0 0 {name=r1}
+C {ngspice_probe.sym} 0 0 0 0 {name=r2}
+C {ngspice_probe.sym} 180 -230 0 0 {name=r3}
+C {ngspice_probe.sym} -180 110 0 0 {name=r4}
+C {ngspice_probe.sym} 180 120 0 0 {name=r5}
