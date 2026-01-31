@@ -4,44 +4,52 @@ K {}
 V {}
 S {}
 E {}
-N -620 280 -620 300 {lab=vcm_ref}
-N -620 360 -620 370 {lab=GND}
-N -790 -10 -790 10 {lab=GND}
-N -790 170 -790 190 {lab=GND}
-N -790 90 -790 110 {lab=inn}
-N -790 -90 -790 -70 {lab=inp}
-N -170 -110 -170 -100 {lab=vdd}
-N -420 -60 -320 -60 {lab=inp}
-N -420 -40 -320 -40 {lab=inn}
-N -420 40 -320 40 {lab=v_feedback}
-N -420 20 -320 20 {lab=bias_n_casc}
-N -420 0 -320 0 {lab=bias_p_src}
-N -420 -20 -320 -20 {lab=bias_p_casc}
-N -790 280 -790 300 {lab=vdd}
-N -790 360 -790 370 {lab=GND}
-N -460 360 -460 370 {lab=GND}
-N -460 280 -460 300 {lab=bias_p_src}
-N -250 360 -250 370 {lab=GND}
-N -250 280 -250 300 {lab=bias_p_casc}
-N -50 360 -50 370 {lab=GND}
-N -50 280 -50 300 {lab=bias_n_casc}
-N -170 90 -170 130 {lab=GND}
-N 170 360 170 370 {lab=GND}
-N 170 280 170 300 {lab=v_feedback}
-N -20 -60 190 -60 {lab=outp}
-N 190 -60 190 -40 {lab=outp}
-N -20 -40 100 -40 {lab=outn}
-N 20 20 20 80 {lab=vcm_ref}
-N 190 20 190 80 {lab=vcm_ref}
-N 270 -60 270 -40 {lab=outp}
-N 190 -60 270 -60 {lab=outp}
-C {vsource.sym} -620 330 0 0 {name=VCM value=\{Vcm\}}
-C {lab_pin.sym} -620 280 0 0 {name=p1 sig_type=std_logic lab=vcm_ref}
-C {gnd.sym} -620 370 0 0 {name=l2 lab=GND}
-C {vsource.sym} -790 -40 0 0 {name=VinP value="PULSE(1.2 1.2005 1u 1n 1n 5u 10u) DC 1.2 AC 0.5m"}
-C {vsource.sym} -790 140 0 0 {name=VinN value="PULSE(1.2 1.1995 1u 1n 1n 5u 10u) DC 1.2 AC -0.5m" }
-C {lab_pin.sym} -790 90 0 0 {name=p3 sig_type=std_logic lab=inn}
-C {code_shown.sym} 350 0 0 0 {name=NGSPICE only_toplevel=true 
+N -470 280 -470 300 {lab=vcm_ref}
+N -470 360 -470 370 {lab=GND}
+N -640 -10 -640 10 {lab=GND}
+N -640 170 -640 190 {lab=GND}
+N -640 90 -640 110 {lab=inn}
+N -640 -90 -640 -70 {lab=inp}
+N -20 -110 -20 -100 {lab=vdd}
+N -270 -60 -170 -60 {lab=inp}
+N -270 -40 -170 -40 {lab=inn}
+N -230 40 -170 40 {lab=v_feedback}
+N -270 20 -170 20 {lab=bias_n_casc}
+N -270 0 -170 0 {lab=bias_p_src}
+N -270 -20 -170 -20 {lab=bias_p_casc}
+N -640 280 -640 300 {lab=vdd}
+N -640 360 -640 370 {lab=GND}
+N -310 360 -310 370 {lab=GND}
+N -310 280 -310 300 {lab=bias_p_src}
+N -100 360 -100 370 {lab=GND}
+N -100 280 -100 300 {lab=bias_p_casc}
+N 100 360 100 370 {lab=GND}
+N 100 280 100 300 {lab=bias_n_casc}
+N -20 90 -20 130 {lab=GND}
+N 320 360 320 370 {lab=GND}
+N 320 280 320 300 {lab=bias_n_sink}
+N 220 -40 300 -40 {lab=outn}
+N 230 -20 300 -20 {lab=vcm_ref}
+N 410 30 410 40 {lab=GND}
+N 510 -60 610 -60 {lab=v_feedback}
+N 160 -60 160 0 {lab=outp}
+N 220 -40 220 0 {lab=outn}
+N 160 -60 300 -60 {lab=outp}
+N 130 -60 160 -60 {lab=outp}
+N 130 -40 220 -40 {lab=outn}
+N 160 60 160 80 {lab=GND}
+N 160 80 220 80 {lab=GND}
+N 220 60 220 80 {lab=GND}
+N -230 40 -230 70 {lab=v_feedback}
+N -270 40 -230 40 {lab=v_feedback}
+N -230 130 -230 160 {lab=bias_n_sink}
+C {vsource.sym} -470 330 0 0 {name=VCM value=\{Vcm\}}
+C {lab_pin.sym} -470 280 0 0 {name=p1 sig_type=std_logic lab=vcm_ref}
+C {gnd.sym} -470 370 0 0 {name=l2 lab=GND}
+C {vsource.sym} -640 -40 0 0 {name=VinP value="PULSE(1.2 1.2005 1u 1n 1n 5u 10u) DC 1.2 AC 0.5m"}
+C {vsource.sym} -640 140 0 0 {name=VinN value="PULSE(1.2 1.1995 1u 1n 1n 5u 10u) DC 1.2 AC -0.5m" }
+C {lab_pin.sym} -640 90 0 0 {name=p3 sig_type=std_logic lab=inn}
+C {code_shown.sym} 660 -10 0 0 {name=NGSPICE only_toplevel=true 
 value="
 .param temp=27
 .control
@@ -50,13 +58,14 @@ save all
 op
 write ota_folded_cascoded_tb.raw
 set appendwrite
-*tran 1n 10u
+tran 1n 10u
 ac dec 100 1 1G
 write ota_folded_cascoded_tb.raw
 
 * ---- AC plots ----
 setplot ac1
 plot db((v(outp)-v(outn))/(v(inp)-v(inn)))
+plot phase((v(outp)-v(outn))/(v(inp)-v(inn)))
 
 * ---- Transient plots ----
 setplot tran1
@@ -66,53 +75,41 @@ plot v(outp)-v(outn)
 plot (v(outp)+v(outn))/2
 .endc
 "}
-C {devices/code_shown.sym} 350 540 0 0 {name=MODEL only_toplevel=true
+C {devices/code_shown.sym} 660 530 0 0 {name=MODEL only_toplevel=true
 format="tcleval( @value )"
 value="
 .lib cornerMOShv.lib mos_tt
 .lib cornerCAP.lib cap_typ
 "}
-C {ota_folded_cascoded.sym} -170 20 0 0 {name=x1}
-C {lab_wire.sym} -420 20 0 1 {name=p22 sig_type=std_logic lab=bias_n_casc}
-C {lab_wire.sym} -420 0 0 1 {name=p26 sig_type=std_logic lab=bias_p_src}
-C {lab_wire.sym} -420 -20 0 1 {name=p27 sig_type=std_logic lab=bias_p_casc}
-C {lab_pin.sym} -790 -90 0 0 {name=p6 sig_type=std_logic lab=inp}
-C {lab_wire.sym} -420 -60 0 1 {name=p2 sig_type=std_logic lab=inp}
-C {lab_wire.sym} -170 -110 0 0 {name=p7 sig_type=std_logic lab=vdd}
-C {lab_wire.sym} -420 -40 0 1 {name=p9 sig_type=std_logic lab=inn}
-C {vsource.sym} -790 330 0 0 {name=VDD value=\{Vdd\}}
-C {gnd.sym} -790 370 0 0 {name=l5 lab=GND}
-C {lab_pin.sym} -790 280 0 0 {name=p13 sig_type=std_logic lab=vdd}
-C {vsource.sym} -460 330 0 0 {name=V_pbias_src value=\{vbias_p_src\} savecurrent=false}
-C {gnd.sym} -460 370 0 0 {name=l6 lab=GND}
-C {lab_pin.sym} -250 280 0 0 {name=p17 sig_type=std_logic lab=bias_p_casc}
-C {vsource.sym} -250 330 0 0 {name=V_pbias_casc value=\{vbias_p_casc\} savecurrent=false}
-C {gnd.sym} -250 370 0 0 {name=l7 lab=GND}
-C {lab_pin.sym} -460 280 0 0 {name=p18 sig_type=std_logic lab=bias_p_src}
-C {vsource.sym} -50 330 0 0 {name=V_nbias_casc value=\{vbias_n_casc\} savecurrent=false}
-C {gnd.sym} -50 370 0 0 {name=l8 lab=GND}
-C {lab_pin.sym} -50 280 0 0 {name=p19 sig_type=std_logic lab=bias_n_casc}
-C {gnd.sym} -170 130 0 0 {name=l1 lab=GND}
-C {lab_wire.sym} -420 40 0 1 {name=p8 sig_type=std_logic lab=v_feedback}
-C {vsource.sym} 170 330 0 0 {name=V_biasn_sink value=\{vbias_n_sink\} savecurrent=false}
-C {gnd.sym} 170 370 0 0 {name=l3 lab=GND}
-C {lab_pin.sym} 170 280 0 0 {name=p31 sig_type=std_logic lab=v_feedback}
-C {lab_wire.sym} 30 -60 0 0 {name=p10 sig_type=std_logic lab=outp}
-C {lab_wire.sym} 20 -40 0 0 {name=p11 sig_type=std_logic lab=outn}
-C {lab_pin.sym} 20 80 0 0 {name=p12 sig_type=std_logic lab=vcm_ref}
-C {res.sym} 190 -10 0 0 {name=R1
-value=\{Rcm1\}
-footprint=1206
-device=resistor
-m=1}
-C {res.sym} 20 -10 0 0 {name=R2
-value=\{Rcm2\}
-footprint=1206
-device=resistor
-m=1}
-C {gnd.sym} -790 10 0 0 {name=l4 lab=GND}
-C {gnd.sym} -790 190 0 0 {name=l9 lab=GND}
-C {code_shown.sym} 350 -220 0 0 {name=param only_toplevel=false 
+C {ota_folded_cascoded.sym} -20 20 0 0 {name=x1}
+C {lab_wire.sym} -270 20 0 1 {name=p22 sig_type=std_logic lab=bias_n_casc}
+C {lab_wire.sym} -270 0 0 1 {name=p26 sig_type=std_logic lab=bias_p_src}
+C {lab_wire.sym} -270 -20 0 1 {name=p27 sig_type=std_logic lab=bias_p_casc}
+C {lab_pin.sym} -640 -90 0 0 {name=p6 sig_type=std_logic lab=inp}
+C {lab_wire.sym} -270 -60 0 1 {name=p2 sig_type=std_logic lab=inp}
+C {lab_wire.sym} -20 -110 0 0 {name=p7 sig_type=std_logic lab=vdd}
+C {lab_wire.sym} -270 -40 0 1 {name=p9 sig_type=std_logic lab=inn}
+C {vsource.sym} -640 330 0 0 {name=VDD value=\{Vdd\}}
+C {gnd.sym} -640 370 0 0 {name=l5 lab=GND}
+C {lab_pin.sym} -640 280 0 0 {name=p13 sig_type=std_logic lab=vdd}
+C {vsource.sym} -310 330 0 0 {name=V_pbias_src value=\{vbias_p_src\} savecurrent=false}
+C {gnd.sym} -310 370 0 0 {name=l6 lab=GND}
+C {lab_pin.sym} -100 280 0 0 {name=p17 sig_type=std_logic lab=bias_p_casc}
+C {vsource.sym} -100 330 0 0 {name=V_pbias_casc value=\{vbias_p_casc\} savecurrent=false}
+C {gnd.sym} -100 370 0 0 {name=l7 lab=GND}
+C {lab_pin.sym} -310 280 0 0 {name=p18 sig_type=std_logic lab=bias_p_src}
+C {vsource.sym} 100 330 0 0 {name=V_nbias_casc value=\{vbias_n_casc\} savecurrent=false}
+C {gnd.sym} 100 370 0 0 {name=l8 lab=GND}
+C {lab_pin.sym} 100 280 0 0 {name=p19 sig_type=std_logic lab=bias_n_casc}
+C {gnd.sym} -20 130 0 0 {name=l1 lab=GND}
+C {vsource.sym} 320 330 0 0 {name=V_biasn_sink value=\{vbias_n_sink\} savecurrent=false}
+C {gnd.sym} 320 370 0 0 {name=l3 lab=GND}
+C {lab_pin.sym} 320 280 0 0 {name=p31 sig_type=std_logic lab=bias_n_sink}
+C {lab_wire.sym} 230 -60 0 1 {name=p10 sig_type=std_logic lab=outp}
+C {lab_wire.sym} 230 -40 0 1 {name=p11 sig_type=std_logic lab=outn}
+C {gnd.sym} -640 10 0 0 {name=l4 lab=GND}
+C {gnd.sym} -640 190 0 0 {name=l9 lab=GND}
+C {code_shown.sym} 660 -230 0 0 {name=param only_toplevel=false 
 value="
 .param Vdd=3
 .param Vcm=Vdd/2
@@ -120,31 +117,41 @@ value="
 .param vbias_n_casc=1.2
 .param vbias_p_src=2.3
 .param vbias_p_casc=1.8
-.param Rcm1=1MEG Rcm2=1MEG
-.param Cl1=1p Cl2=1p 
+.param Riso=100k
+.param Cl1=1p Cl2=1p
+.param Gcmfb=5m 
 "}
-C {capa.sym} 270 -10 0 0 {name=C1
-m=1
-value=\{Cl1\}
-footprint=1206
-device="ceramic capacitor"}
-C {gnd.sym} 100 20 0 0 {name=l10 lab=GND}
-C {lab_pin.sym} 190 80 0 0 {name=p4 sig_type=std_logic lab=vcm_ref}
-C {capa.sym} 100 -10 0 0 {name=C2
+C {devices/launcher.sym} 340 160 0 0 {name=h2
+descr="simulate" 
+tclcommand="xschem save; xschem netlist; xschem simulate"
+}
+C {devices/launcher.sym} 340 220 0 0 {name=h3
+descr="annotate OP" 
+tclcommand="set show_hidden_texts 1; xschem annotate_op"
+}
+C {devices/code_shown.sym} 660 460 0 0 {name=SAVE only_toplevel=true
+format="tcleval( @value )"
+value=".include [file rootname [xschem get schname]].save
+"}
+C {ideal_cmfb.sym} 450 -30 0 0 {name=x2}
+C {capa.sym} 220 30 0 0 {name=C2
 m=1
 value=\{Cl2\}
 footprint=1206
 device="ceramic capacitor"}
-C {gnd.sym} 270 20 0 0 {name=l11 lab=GND}
-C {devices/launcher.sym} 190 160 0 0 {name=h2
-descr="simulate" 
-tclcommand="xschem save; xschem netlist; xschem simulate"
-}
-C {devices/launcher.sym} 190 220 0 0 {name=h3
-descr="annotate OP" 
-tclcommand="set show_hidden_texts 1; xschem annotate_op"
-}
-C {devices/code_shown.sym} 350 470 0 0 {name=SAVE only_toplevel=true
-format="tcleval( @value )"
-value=".include [file rootname [xschem get schname]].save
-"}
+C {capa.sym} 160 30 0 0 {name=C1
+m=1
+value=\{Cl1\}
+footprint=1206
+device="ceramic capacitor"}
+C {lab_wire.sym} 230 -20 0 1 {name=p4 sig_type=std_logic lab=vcm_ref}
+C {gnd.sym} 410 40 0 0 {name=l10 lab=GND}
+C {lab_wire.sym} 610 -60 0 0 {name=p5 sig_type=std_logic lab=v_feedback}
+C {gnd.sym} 220 80 0 0 {name=l11 lab=GND}
+C {res.sym} -230 100 0 0 {name=R1
+value=\{Riso\}
+footprint=1206
+device=resistor
+m=1}
+C {lab_wire.sym} -270 40 0 1 {name=p12 sig_type=std_logic lab=v_feedback}
+C {lab_pin.sym} -230 160 0 1 {name=p8 sig_type=std_logic lab=bias_n_sink}
