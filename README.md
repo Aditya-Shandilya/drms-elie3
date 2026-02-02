@@ -34,9 +34,9 @@ The system-level modeling requires MATLAB/Simulink and the Delta-Sigma Toolbox.
 
 To view and run the transistor sizing notebooks (`.ipynb` files) located in `3_real_circuits/sizing/`, you will need a local installation of:
 - **[Python 3.8+](https://www.python.org/)** 
-- **[Jupyter Notebook](https://jupyter.org/)**
+- **[Jupyter Notebook](https://jupyter.org/)** (all included in docker-image of IIC-OSIC-TOOLS)
 
-# 🧠 What This Project Demonstrates
+# 🧠 What this project demonstrates
 
 This project connects **ΣΔ signal-processing theory** to **transistor-level analog design** using a completely open-source workflow:
 
@@ -125,6 +125,7 @@ cd 3_real_circuits
 xschem ota_folded_cascoded_tb.sch &
 ```
 
-# 📚 Refrences
+# 📚 References
 
-This project relies on the following key literature and tools:
+include a html version of your (bib-file)[5_report/references.bib] with this tool:
+https://github.com/JianCheng/bibtex2html.py
