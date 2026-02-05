@@ -79,7 +79,6 @@ C {devices/code_shown.sym} 660 530 0 0 {name=MODEL only_toplevel=true
 format="tcleval( @value )"
 value="
 .lib cornerMOShv.lib mos_tt
-.lib cornerCAP.lib cap_typ
 "}
 C {ota_folded_cascoded.sym} -20 20 0 0 {name=x1}
 C {lab_wire.sym} -270 20 0 1 {name=p22 sig_type=std_logic lab=bias_n_casc}
