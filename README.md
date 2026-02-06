@@ -7,9 +7,7 @@ The project follows a **top-down mixed-signal IC design flow**:
 > **Behavioral modeling → Ideal circuit implementation → Real circuit implementation (PDK) → Layout (planned)**
 
 The modulator architecture and noise-shaping techniques implemented in this project are directly based on:
-> **R. Schreier and G. C. Temes**, *Understanding Delta-Sigma data converters*
-
-
+> [**R. Schreier and G. C. Temes**, *Understanding Delta-Sigma data converters*](https://ieeexplore.ieee.org/book/5264508)
 
 # 🛠 Tool Installation & Prerequisites
 
@@ -106,6 +104,8 @@ To analyze these circuits, you must first run the circuit simulation in Xschem t
 | 2nd-Order       | Transient Analysis | second_order_dsm_plot_transient.m     |
 | 2nd-Order       | FFT Analysis       | second_order_dsm_fft.m                |
 
+> [!IMPORTANT] Ensure your MATLAB working directory is set to `2_ideal_circuits/` so that the scripts can correctly locate the data exported to the `/simulations` folder.
+
 ## 3️⃣ Transistor-Level Work
 
 This section covers the implementation of real circuit blocks using the IHP SG13G2 PDK.
@@ -127,5 +127,6 @@ xschem ota_folded_cascoded_tb.sch &
 
 # 📚 References
 
-include a html version of your (bib-file)[5_report/references.bib] with this tool:
-https://github.com/JianCheng/bibtex2html.py
+This project builds upon established work in ΣΔ data converter theory, analog IC design methodologies, and open-source PDK development.  
+
+👉 **[Full Bibliography](https://aditya-shandilya.github.io/drms-elie3/references.html)**

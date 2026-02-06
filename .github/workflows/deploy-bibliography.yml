@@ -1,0 +1,58 @@
+name: Deploy Bibliography to GitHub Pages
+
+on:
+  push:
+    paths:
+      - '5_report/references.bib'
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install bibtex2html
+        run: sudo apt-get update && sudo apt-get install -y bibtex2html
+      
+      - name: Generate bibliography
+        run: |
+          mkdir -p _site
+            bibtex2html -nobibsource -a -css https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/spacelab/bootstrap.min.css -header "<h2>Bibliography</h2>" -o _site/references 5_report/references.bib
+          
+      - name: Create temporary index
+        run: |
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>DRMS ELIE3</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                max-width: 800px;
+                margin: 100px auto;
+                padding: 20px;
+                text-align: center;
+              }
+              h1 { color: #0366d6; }
+              a { color: #0366d6; text-decoration: none; font-size: 1.2em; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>ΣΔ ADC Design using open source IIC-OSIC-TOOLS</h1>
+            <p>📚 <a href="references.html">View Bibliography</a></p>
+            <p style="color: #666; margin-top: 40px;">Full report coming soon...</p>
+          </body>
+          </html>
+          EOF
+      
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
