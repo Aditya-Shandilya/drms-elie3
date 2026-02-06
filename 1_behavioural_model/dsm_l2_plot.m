@@ -10,8 +10,8 @@ L=2;
 form='CIFB';
 fs = 1e6;               % Sampling frequency
 Ts = 1/fs;              % Time step
-M  = 500;               % Oversampling Ratio
-N  = 16*M;              % Simulation length
+M  = 512;               % Oversampling Ratio
+N  = 64*M;              % Simulation length
 cycles = 5;             % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
@@ -79,7 +79,7 @@ quantOut = simOut.yout.get('quantOut').Values.Data;
 u   = squeeze(logs.getElement('inputLog').Values.Data);
 %y   = squeeze(logs.getElement('filterLog').Values.Data);
 %v   = squeeze(logs.getElement('quantLog').Values.Data);
-%dsm = squeeze(logs.getElement('dsmLog').Values.Data);
+v = squeeze(logs.getElement('dsmLog').Values.Data);
 t   = logs.getElement('inputLog').Values.Time;
 
 % Calculate points to plot to show ~1.5ms (trying to zoom-in)
@@ -109,7 +109,28 @@ legend('show', 'Location', 'northeast');
 ylim([-2 2]);
 xlim([0 t1(end)]);
 
+%%Pole Zero Plot using NTF
+figure('Name', 'NTF Characteristics', 'Color', 'w');
 
+% Plot 1: Pole-Zero Map
+subplot(1,2,1);
+% Extract numerator (zeros) and denominator (poles) from the NTF object
+[zeros_ntf, poles_ntf] = zpkdata(H, 'v'); 
+zplane(zeros_ntf, poles_ntf); 
+grid on;
+title('NTF Pole-Zero Map');
+
+% Plot 2: Magnitude Response of the NTF
+subplot(1,2,2);
+f_plot = linspace(0, 0.5, 1000); % Normalized frequency
+% Calculate frequency response
+H_f = evalTF(H, exp(2j*pi*f_plot));
+semilogx(f_plot*fs/1e3, 20*log10(abs(H_f)), 'b', 'LineWidth', 2);
+grid on;
+xline(fB/1e3, '--r', 'Bandwidth');
+xlabel('Frequency (kHz)');
+ylabel('Magnitude (dB)');
+title('NTF Magnitude Response');
 %% Spectral Analysis & SNR Calculation (Using Hann Windowing)
 
 % Windowing (Hann window to suppress spectral leakage)
@@ -172,3 +193,100 @@ ylabel('Magnitude (dB)');
 
 %ABCD = stuffABCD(a,g,b,c,form='CIFB')
 %fprintf('ABCD:      %d \n', ABCD);
+
+%% Decimation filter
+% Taking signal v as input which is output of SDM.
+% x_sine -> SDM -> v -> SINC3 -> DCF -> HBF1 -> HBF2 -> I2C_out
+% Assume fB = 20 kHz, fx = 20 kHz
+% 120 kS/s at output
+
+% SINC3
+Nsinc = 64; % downsampling ratio
+h1 = zeros(1, Nsinc);
+h1(1:Nsinc) = 1/Nsinc;
+hsinc1 = ones(1, Nsinc)*1/Nsinc;
+hsinc2 = conv(hsinc1, hsinc1);
+hsinc3 = conv(hsinc1, hsinc2);
+% Force normalization to 0 dB at DC
+hsinc3 = hsinc3 / sum(hsinc3);
+
+%% Filter SDM output
+% This stage takes the high-speed bitstream and reduces it by Nsinc (64)
+Sinc3outOrg = conv(hsinc3, v);
+Sinc3out = downsample(Sinc3outOrg, Nsinc);
+
+%% Droop correction filter (DCF)
+DCF = fdesign.decimator(Nsinc, 'ciccomp', 1, 3, 'n,fc,ap,ast', 12, 0.45, 0.05, 60);
+Hdcf = design(DCF, 'equiripple', 'SystemObject', true);
+DCFnum = Hdcf.Numerator;
+[DCFfreq, w3] = freqz(DCFnum, 1);
+[DCFimp, tw3] = impz(DCFnum, 1);
+
+%% Filter operation
+DCFout = conv(Sinc3out, DCFimp);
+
+%% Half-band filter 1 (HBF1)
+FsHBF1 = fs/Nsinc;
+HBF1taps = 26;
+HBF1num = firhalfband(HBF1taps, 0.25);
+[hbf1f, w1] = freqz(HBF1num, 1);
+[hbf1t, tw1] = impz(HBF1num, 1);
+HBF1outOrg = conv(DCFout, hbf1t);
+HBF1out = downsample(HBF1outOrg, 2);
+
+%% Half-band filter 2 (HBF2)
+FsHBF2 = FsHBF1/2;
+HBF2taps = 50;
+HBF2num = firhalfband(HBF2taps, 0.25);
+[hbf2f, w2] = freqz(HBF2num, 1);
+[hbf2t, tw2] = impz(HBF2num, 1);
+HBF2outOrg = conv(HBF1out, hbf2t);
+HBF2out = downsample(HBF2outOrg, 2);
+
+%% Frequency analysis of Decimated Output
+% Parameters for the Decimated Signal
+fs_dec = fs / (Nsinc * 4);  
+N_dec = length(HBF2out);
+
+% Extract Steady-State of Decimated Output (Last 80%)
+start_idx = floor(N_dec * 0.2); 
+v_clean = HBF2out(start_idx:end);
+v_clean_ac = v_clean - mean(v_clean); % DC Removal
+N_steady = length(v_clean_ac);
+
+% Calculate PSD for Decimated Output
+w_dec = hann(N_steady);
+norm_dec = sum(w_dec);
+X_dec = abs(fft(v_clean_ac .* w_dec(:)));
+X_mag_dec = X_dec(1:floor(N_steady/2)) * 2 / norm_dec;
+X_db_dec = 20*log10(X_mag_dec + eps);
+f_dec_axis = (0:floor(N_steady/2)-1) * (fs_dec / N_steady);
+
+% Plotting
+figure('Color', 'w', 'Name', 'Final PSD Comparison');
+hold on;
+
+%Original DSM
+p1 = plot(f_axis/1e3, X_db, 'b', 'LineWidth', 1);
+%Decimated Output
+p2 = plot(f_dec_axis/1e3, X_db_dec, 'r', 'LineWidth', 2);
+lx = xline(fx/1e3, '--g', 'LineWidth', 1.5);
+lb = xline(fB/1e3, '--k', 'LineWidth', 2);
+[~, peak_idx] = max(X_mag_dec);
+ps = plot(f_dec_axis(peak_idx)/1e3, X_db_dec(peak_idx), 'go', 'MarkerSize', 10, 'LineWidth', 2);
+
+legend([p1, p2, lx, lb, ps], ...
+    {'Raw DSM Bitstream (Noise Shaped)', ...
+     'Decimated Output (Filtered)', ...
+     'Input Signal Frequency', ...
+     'Signal Bandwidth (fB)', ...
+     'Fundamental Peak'}, ...
+    'Location', 'southwest', 'FontSize', 9);
+grid on;
+set(gca, 'XScale', 'log'); 
+xlim([0.1 fs/2e3]); 
+ylim([-160 10]);
+xlabel('Frequency (kHz)');
+ylabel('Magnitude (dB)');
+title(['PSD Comparison (SNR: ' num2str(SNR_dB, '%.2f') ' dB)']);
+hold off;

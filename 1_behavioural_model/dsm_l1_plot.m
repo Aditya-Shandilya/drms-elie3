@@ -8,8 +8,8 @@ L=1;
 form='CIFB';
 fs = 1e6;               % Sampling frequency
 Ts = 1/fs;              % Time step
-M  = 500;               % Oversampling Ratio
-N  = 16*M;              % Simulation length
+M  = 512;               % Oversampling Ratio
+N  = 64*M;              % Simulation length
 cycles = 5;            % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
@@ -26,6 +26,33 @@ OLgain = 1000;        % Open Loop Gain
 %%Calculating the coefficients
 H = synthesizeNTF(L, M);
 [a, g, b, c] = realizeNTF(H, form);
+b(2:end) = 0;
+ABCD = stuffABCD(a, g, b, c, form);
+[ABCDs umax] = scaleABCD(ABCD);   %coefficients are scaled for hardware implementation
+[a, g, b, c] = mapABCD(ABCDs, form);
+
+%%Pole Zero Plot using NTF
+figure('Name', 'NTF Characteristics', 'Color', 'w');
+
+% Plot 1: Pole-Zero Map
+subplot(1,2,1);
+% Extract numerator (zeros) and denominator (poles) from the NTF object
+[zeros_ntf, poles_ntf] = zpkdata(H, 'v'); 
+zplane(zeros_ntf, poles_ntf); 
+grid on;
+title('NTF Pole-Zero Map');
+
+% Plot 2: Magnitude Response of the NTF
+subplot(1,2,2);
+f_plot = linspace(0, 0.5, 1000); % Normalized frequency
+% Calculate frequency response
+H_f = evalTF(H, exp(2j*pi*f_plot));
+semilogx(f_plot*fs/1e3, 20*log10(abs(H_f)), 'b', 'LineWidth', 2);
+grid on;
+xline(fB/1e3, '--r', 'Bandwidth');
+xlabel('Frequency (kHz)');
+ylabel('Magnitude (dB)');
+title('NTF Magnitude Response');
 
 %% This section forces Simulink to use our fs and fx
 modelName = 'dsm_l1_sim';
