@@ -63,7 +63,7 @@ value="
 .param Vref=3
 .param Vdd=3
 .param Vcm=Vdd/2
-.param C1=1p C2=1p
+.param C1=0.5p C2=1p
 .param samples=500
 "}
 C {code_shown.sym} 272 111 0 0 {name=NGSPICE only_toplevel=false 
@@ -71,12 +71,11 @@ value="
 .temp 27
 .control
 option sparse
+option method=gear
 tran 100n 10ms 0 20n uic
 save V(Vin) V(x1.Vint1) V(x1.Vint2) V(out)
 wrdata sodsm_data.txt V(Vin) V(x1.Vint1) V(x1.Vint2) V(out)
 plot V(Vin) V(x1.Vint1) V(x1.Vint2) V(out)
-
-
 .endc
 "}
 C {lab_wire.sym} -170 -50 0 0 {name=p3 sig_type=std_logic lab=Vin}

@@ -47,11 +47,11 @@ N -310 90 -310 100 {lab=phi1}
 N 310 50 310 70 {lab=#net3}
 N 530 30 530 50 {lab=#net4}
 N 530 50 530 70 {lab=#net4}
-N 530 -90 530 -30 {lab=diff}
-N 690 -90 730 -90 {lab=diff}
-N 690 -170 830 -170 {lab=diff}
-N 690 -170 690 -90 {lab=diff}
-N 530 -90 690 -90 {lab=diff}
+N 530 -90 530 -30 {lab=diff2}
+N 690 -90 730 -90 {lab=diff2}
+N 690 -170 830 -170 {lab=diff2}
+N 690 -170 690 -90 {lab=diff2}
+N 530 -90 690 -90 {lab=diff2}
 N 950 -60 1030 -60 {lab=Vint2}
 N 890 -170 950 -170 {lab=Vint2}
 N 950 -170 950 -60 {lab=Vint2}
@@ -132,7 +132,7 @@ m=1
 value=\{C2\}
 footprint=1206
 device="ceramic capacitor"}
-C {lab_wire.sym} 660 -90 0 0 {name=p21 sig_type=std_logic lab=diff}
+C {lab_wire.sym} 660 -90 0 0 {name=p21 sig_type=std_logic lab=diff2}
 C {lab_wire.sym} 660 -30 0 0 {name=p22 sig_type=std_logic lab=Vcm}
 C {capa.sym} 420 50 3 1 {name=C4
 m=1

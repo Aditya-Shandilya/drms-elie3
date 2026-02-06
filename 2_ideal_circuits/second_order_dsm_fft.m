@@ -81,7 +81,7 @@ if ~isfile(filename)
 else
     data = readmatrix(filename);
 
-    t_raw = data(:,7);
+    t_raw = data(:,1);
     v_raw = data(:,8);
 
     [t_unique, idx] = unique(t_raw);
