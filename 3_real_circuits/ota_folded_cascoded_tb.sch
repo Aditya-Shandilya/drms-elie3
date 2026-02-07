@@ -117,7 +117,7 @@ value="
 .param vbias_p_src=2.3
 .param vbias_p_casc=1.8
 .param Riso=100k
-.param Cl1=1p Cl2=1p
+.param Cl1=3p Cl2=3p
 .param Gcmfb=5m 
 "}
 C {devices/launcher.sym} 340 160 0 0 {name=h2
