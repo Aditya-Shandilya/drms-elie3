@@ -46,36 +46,31 @@ N -230 130 -230 160 {lab=bias_n_sink}
 C {vsource.sym} -470 330 0 0 {name=VCM value=\{Vcm\}}
 C {lab_pin.sym} -470 280 0 0 {name=p1 sig_type=std_logic lab=vcm_ref}
 C {gnd.sym} -470 370 0 0 {name=l2 lab=GND}
-C {vsource.sym} -640 -40 0 0 {name=VinP value="PULSE(1.2 1.2005 1u 1n 1n 5u 10u) DC 1.2 AC 0.5m"}
-C {vsource.sym} -640 140 0 0 {name=VinN value="PULSE(1.2 1.1995 1u 1n 1n 5u 10u) DC 1.2 AC -0.5m" }
+C {vsource.sym} -640 -40 0 0 {name=VinP value="PULSE(1.2 1.5 1u 1n 1n 5u 10u) DC 1.2 AC 1"}
+C {vsource.sym} -640 140 0 0 {name=VinN value="PULSE(1.2 0.9 1u 1n 1n 5u 10u) DC 1.2 AC -1" }
 C {lab_pin.sym} -640 90 0 0 {name=p3 sig_type=std_logic lab=inn}
-C {code_shown.sym} 660 -10 0 0 {name=NGSPICE only_toplevel=true 
+C {code_shown.sym} 660 0 0 0 {name=NGSPICE only_toplevel=true 
 value="
-.param temp=27
+.option temp=27
 .control
 option sparse
 save all
 op
 write ota_folded_cascoded_tb.raw
-set appendwrite
-tran 1n 10u
+print @n.x1.xm3.nsg13_hv_nmos[ids]
+print @n.x1.xm10.nsg13_hv_pmos[ids]
+print @n.x1.xm1.nsg13_hv_nmos[ids]
+wrdata op_data.txt @n.x1.xm3.nsg13_hv_nmos[ids] @n.x1.xm1.nsg13_hv_nmos[ids] @n.x1.xm1.nsg13_hv_nmos[gm] @n.x1.xm10.nsg13_hv_pmos[ids] @n.x1.xm10.nsg13_hv_pmos[gm] @n.x1.xm8.nsg13_hv_pmos[ids]
+
+tran 100p 10u
+wrdata ota_tran_data.txt v(outp) v(outn) v(inp) v(inn)
+
 ac dec 100 1 1G
-write ota_folded_cascoded_tb.raw
+wrdata ota_ac_data.txt v(outp) v(outn) v(inp) v(inn)
 
-* ---- AC plots ----
-setplot ac1
-plot db((v(outp)-v(outn))/(v(inp)-v(inn)))
-plot phase((v(outp)-v(outn))/(v(inp)-v(inn)))
-
-* ---- Transient plots ----
-setplot tran1
-plot v(inp) v(inn)
-plot v(outp) v(outn)
-plot v(outp)-v(outn)
-plot (v(outp)+v(outn))/2
 .endc
 "}
-C {devices/code_shown.sym} 660 530 0 0 {name=MODEL only_toplevel=true
+C {devices/code_shown.sym} 660 510 0 0 {name=MODEL only_toplevel=true
 format="tcleval( @value )"
 value="
 .lib cornerMOShv.lib mos_tt
@@ -112,10 +107,10 @@ C {code_shown.sym} 660 -230 0 0 {name=param only_toplevel=false
 value="
 .param Vdd=3
 .param Vcm=Vdd/2
-.param vbias_n_sink=0.7
+.param vbias_n_sink=0.8
 .param vbias_n_casc=1.2
-.param vbias_p_src=2.3
-.param vbias_p_casc=1.8
+.param vbias_p_src=2.2
+.param vbias_p_casc=1.9
 .param Riso=100k
 .param Cl1=3p Cl2=3p
 .param Gcmfb=5m 
@@ -128,7 +123,7 @@ C {devices/launcher.sym} 340 220 0 0 {name=h3
 descr="annotate OP" 
 tclcommand="set show_hidden_texts 1; xschem annotate_op"
 }
-C {devices/code_shown.sym} 660 460 0 0 {name=SAVE only_toplevel=true
+C {devices/code_shown.sym} 660 440 0 0 {name=SAVE only_toplevel=true
 format="tcleval( @value )"
 value=".include [file rootname [xschem get schname]].save
 "}
