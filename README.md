@@ -118,12 +118,29 @@ This section covers the implementation of real circuit blocks using the IHP SG13
 
 -   **Sizing Script:** Jupyter notebook using [`pygmid`](https://github.com/dreoilin/pygmid) for transistor sizing located in `3_real_circuits/sizing/sizing_ota_sizing_gmid_sg13hv_folded.ipynb`
 
-Run the testbench using **Xschem**:
+### 🚀 Simulation & Analysis Workflow
 
-```         
-cd 3_real_circuits
-xschem ota_folded_cascoded_tb.sch &
+Similar to the ideal circuit flow, the transistor-level OTA analysis follows a two-step process: circuit simulation in Xschem followed by post-processing in MATLAB.
+
+**Step 1: Generate Simulation Data**
+1. Open the OTA testbench schematic in **Xschem**:
+   ```
+   cd 3_real_circuits
+   xschem ota_folded_cascoded_tb.sch &
+   ```
+2. Click **Netlist** and then **Simulate**.
+3. This process generates a `.txt` data file within the `3_real_circuits/simulations/` folder.
+
+**Step 2: Post-Processing with MATLAB**
+Once the simulation is complete and the `.txt` file exists, run the MATLAB script to visualize the transient and AC analysis results:
+
 ```
+cd 3_real_circuits
+# Open MATLAB and run:
+ota_folded_cascoded_analysis.m
+```
+
+> [!IMPORTANT] Ensure your MATLAB working directory is set to `3_real_circuits/` so that the script can correctly locate the data exported to the `/simulations` folder.
 
 # 📚 References
 
