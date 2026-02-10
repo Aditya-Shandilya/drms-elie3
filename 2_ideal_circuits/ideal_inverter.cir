@@ -1,3 +1,0 @@
-.subckt ideal_inverter out in vss vdd
-B1 out GND V={v(in)>v(vdd)/2?v(vss):v(vdd)}
-.ends

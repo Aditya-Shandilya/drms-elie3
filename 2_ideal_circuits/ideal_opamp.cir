@@ -1,4 +1,0 @@
-.subckt ideal_opamp inp inn out
-E1 out GND inp inn 1Meg
-R1 out GND 100Meg m=1
-.ends
