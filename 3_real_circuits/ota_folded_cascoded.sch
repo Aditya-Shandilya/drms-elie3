@@ -97,7 +97,7 @@ C {devices/ipin.sym} -320 -400 0 0 {name=p9 lab=vbias_p_src}
 C {devices/ipin.sym} -320 120 0 0 {name=p3 lab=vbias_n_sink}
 C {sg13g2_pr/sg13_hv_nmos.sym} -110 -50 0 0 {name=M1
 l=1u
-w=3u
+w=2u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -105,15 +105,15 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} -160 -290 0 1 {name=M10
 l=1u
-w=12.1u
-ng=2
+w=8u
+ng=1
 m=1
 model=sg13_hv_pmos
 spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} -160 -170 0 1 {name=M8
 l=1u
-w=6u
+w=4u
 ng=1
 m=1
 model=sg13_hv_pmos
@@ -121,15 +121,15 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} 160 -290 0 0 {name=M11
 l=1u
-w=12.1u
-ng=2
+w=8u
+ng=1
 m=1
 model=sg13_hv_pmos
 spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} 160 -170 0 0 {name=M9
 l=1u
-w=6u
+w=4u
 ng=1
 m=1
 model=sg13_hv_pmos
@@ -137,7 +137,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} 160 70 0 0 {name=M7
 l=1u
-w=1.7u
+w=1u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -145,7 +145,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} 160 170 0 0 {name=M5
 l=1u
-w=1.7u
+w=1u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -153,7 +153,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} -160 170 0 1 {name=M4
 l=1u
-w=1.7u
+w=1u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -161,7 +161,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} -160 70 0 1 {name=M6
 l=1u
-w=1.7u
+w=1u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -169,7 +169,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} 110 -50 0 1 {name=M2
 l=1u
-w=3u
+w=2u
 ng=1
 m=1
 model=sg13_hv_nmos
@@ -177,7 +177,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} -20 170 0 0 {name=M3
 l=1.5u
-w=4.9u
+w=2.5u
 ng=1
 m=1
 model=sg13_hv_nmos

@@ -1,11 +1,11 @@
 clear; clc; close all;
 
 % Design Targets
-Target_Gm      = 94.25e-6;   % 94.25 uS
-Target_Itail   = 9.42e-6;    % 9.42 uA
-Target_Itop    = 9.42e-6;    % 9.42 uA
+Target_Gm      = 31.42e-6;   % 94.25 uS
+Target_Itail   = 6.28e-6;    % 9.42 uA
+Target_Itop    = 6.28e-6;    % 9.42 uA
 Target_UGB     = 5.0e6;      % 5 MHz
-C_load         = 3e-12;      % 3 pF
+C_load         = 1e-12;      % 3 pF
 
 % File paths
 dataDir  = 'simulations';
@@ -93,15 +93,17 @@ if isfile(acFile)
     fprintf('   Phase Margin:        %8.2f deg\n', sim_pm);
 
     figure('Name', 'AC Analysis', 'NumberTitle', 'off', 'Position', [150 150 1000 700]);
-    
     subplot(2,1,1); 
     semilogx(freq, mag_db, 'Color', colors.cyan, 'LineWidth', 2.5, 'DisplayName', 'Frequency Response'); 
     hold on;
     xline(sim_gbw, '-', 'LineWidth', 2, 'Color', colors.lime, 'DisplayName', sprintf('Simulated GBW: %.2f MHz', sim_gbw/1e6));
     xline(Target_UGB, '--', 'LineWidth', 2, 'Color', colors.orange, 'DisplayName', sprintf('Target GBW: %.2f MHz', Target_UGB/1e6));
     yline(0, ':', 'LineWidth', 1.5, 'Color', [0.7 0.7 0.7], 'HandleVisibility', 'off');
+    
+    text(freq(1)*1.5, dc_gain-5, sprintf('DC Gain = %.2f dB', dc_gain), 'FontSize', 11, 'FontWeight', 'bold', 'Color', colors.magenta);
     grid on;
     title('Bode Magnitude', 'FontSize', 13, 'FontWeight', 'bold'); 
+    xlabel('Frequency (Hz)', 'FontSize', 12, 'FontWeight', 'bold');
     ylabel('Gain (dB)', 'FontSize', 12, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     hold off;
@@ -155,6 +157,7 @@ if isfile(tranFile)
     grid on;
     title(sprintf('Differential Input (Step = %.2f mV)', step_mv), ...
           'FontSize', 13, 'FontWeight', 'bold'); 
+    xlabel('Time (µs)', 'FontSize', 12, 'FontWeight', 'bold');
     ylabel('Voltage (mV)', 'FontSize', 12, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 11);
     
@@ -164,7 +167,7 @@ if isfile(tranFile)
     
     if step_mv >= 10 && exist('val_Itail', 'var')
 
-        expected_sr = (2 * val_Itail) / C_load;
+        expected_sr = (val_Itail) / C_load;
         
         fprintf('   Slew Rate (Meas):    %8.2f V/us\n', measured_sr/1e6);
         fprintf('   Expected SR (2*I/C): %8.2f V/us\n', expected_sr/1e6);
