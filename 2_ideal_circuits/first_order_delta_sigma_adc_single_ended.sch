@@ -81,7 +81,7 @@ value="
 .param Vref=3
 .param Vdd=3
 .param Vcm=Vdd/2
-.param C1=1p C2=1p
+.param C1=0.25p C2=1p
 .param samples=500
 "}
 C {code_shown.sym} 572 51 0 0 {name=NGSPICE only_toplevel=false 
