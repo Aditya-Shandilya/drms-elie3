@@ -9,9 +9,9 @@ close all;
 L=2;
 form='CIFB';
 fs = 1e6;               % Sampling frequency
-Ts = 1/fs;              % Time step
+Ts = 1/fs;              % Sampling Time
 M  = 512;               % Oversampling Ratio
-N  = 64*M;              % Simulation length
+N  = 64*M;              % Number of Samples
 cycles = 5;             % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
@@ -29,13 +29,12 @@ ABCD = stuffABCD(a, g, b, c, form);
 [ABCDs umax] = scaleABCD(ABCD);   %coefficients are scaled for hardware implementation
 [a, g, b, c] = mapABCD(ABCDs, form);
 
-%% This section forces Simulink to use our fs and fx
+%% This section forces Simulink to uses fs and fx
 modelName = 'dsm_l2_sim';
 load_system(modelName);
 %open_system(modelName);
 
-%This section was added because sine block in simulink was not giving
-%correct result. Here, the sine block is overwritten by Freq, SampleTime
+%Sine block is overwritten by Freq, SampleTime
 %and Amplitude in MATLAB code.
 
 sineBlock = find_system(modelName, 'BlockType', 'Sin');
@@ -74,16 +73,12 @@ logs = simOut.logsout;
 dsmOut = simOut.yout.get('dsmOut').Values.Data;
 filterOut = simOut.yout.get('filterOut').Values.Data;
 quantOut = simOut.yout.get('quantOut').Values.Data;
-
-% Extract samples, convert "3-D" signals to "1-D" vector
 u   = squeeze(logs.getElement('inputLog').Values.Data);
-%y   = squeeze(logs.getElement('filterLog').Values.Data);
-%v   = squeeze(logs.getElement('quantLog').Values.Data);
 v = squeeze(logs.getElement('dsmLog').Values.Data);
 t   = logs.getElement('inputLog').Values.Time;
 
-% Calculate points to plot to show ~1.5ms (trying to zoom-in)
-N_plot = ceil(1.7e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
+% Calculate points to plot to show ~1.5ms
+N_plot = ceil(6.7e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
 if length(t) < N_plot, N_plot = length(t); end
 
 %Using values till N_plot for better graph visualisation
@@ -114,7 +109,6 @@ figure('Name', 'NTF Characteristics', 'Color', 'w');
 
 % Plot 1: Pole-Zero Map
 subplot(1,2,1);
-% Extract numerator (zeros) and denominator (poles) from the NTF object
 [zeros_ntf, poles_ntf] = zpkdata(H, 'v'); 
 zplane(zeros_ntf, poles_ntf); 
 grid on;
@@ -146,14 +140,23 @@ X = abs(fft(dsm_windowed));
 X_mag = X(1:N/2) * 2 / norm_factor; % Single-sided magnitude spectrum
 X_db  = 20*log10(X_mag);
 
+f = linspace(0, 0.5, N/2 + 1); % Normalized frequency vector
+z = exp(2i * pi * f);          % Frequency domain representation
+figure('Name', 'Bode Plot');
+plot(f, dbv(evalTF(H, z)), 'LineWidth', 2);
+grid on;
+title('Bode Plot of NTF');
+xlabel('Normalized Frequency (f/fs)');
+ylabel('Magnitude (dB)');f = [0:N/2-1]/N;
+
 % SNR Calculation (In-Band)
 % Signal Bin (DC is bin 1, Fundamental is bin 1+cycles)
 bin_sig = 1 + cycles;
 
-% Bandwidth Bin (Limit for In-Band Noise)
+% Bandwidth Bin 
 bin_bw  = floor(fB * N / fs);
 
-% Define Noise Bins: From DC+1 up to Bandwidth, EXCLUDING signal bin
+% Noise Bins: From DC+1 up to Bandwidth, excluding signal bin
 span = 1; 
 noise_indices = 2:bin_bw; 
 sig_indices   = (bin_sig - span) : (bin_sig + span);
@@ -191,14 +194,9 @@ title(['PSD (SNR = ' num2str(SNR_dB, '%.1f') ' dB, OSR = ' num2str(M) ')']);
 xlabel('Frequency (Hz)');
 ylabel('Magnitude (dB)');
 
-%ABCD = stuffABCD(a,g,b,c,form='CIFB')
-%fprintf('ABCD:      %d \n', ABCD);
-
 %% Decimation filter
 % Taking signal v as input which is output of SDM.
 % x_sine -> SDM -> v -> SINC3 -> DCF -> HBF1 -> HBF2 -> I2C_out
-% Assume fB = 20 kHz, fx = 20 kHz
-% 120 kS/s at output
 
 % SINC3
 Nsinc = 64; % downsampling ratio
@@ -219,8 +217,8 @@ Sinc3out = downsample(Sinc3outOrg, Nsinc);
 DCF = fdesign.decimator(Nsinc, 'ciccomp', 1, 3, 'n,fc,ap,ast', 12, 0.45, 0.05, 60);
 Hdcf = design(DCF, 'equiripple', 'SystemObject', true);
 DCFnum = Hdcf.Numerator;
-[DCFfreq, w3] = freqz(DCFnum, 1);
-[DCFimp, tw3] = impz(DCFnum, 1);
+[DCFfreq, w3] = freqz(DCFnum, 1); %freq response
+[DCFimp, tw3] = impz(DCFnum, 1);  %impulse response
 
 %% Filter operation
 DCFout = conv(Sinc3out, DCFimp);
@@ -242,6 +240,22 @@ HBF2num = firhalfband(HBF2taps, 0.25);
 [hbf2t, tw2] = impz(HBF2num, 1);
 HBF2outOrg = conv(HBF1out, hbf2t);
 HBF2out = downsample(HBF2outOrg, 2);
+
+figure('Color','w','Name','DSM vs Decimated Output');
+
+subplot(2,1,1);
+stairs(v(1:300));
+grid on;
+title('DSM Bitstream Output v[n]');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+plot(HBF2out, 'LineWidth', 1.5);
+grid on;
+title('Final Decimated Output');
+xlabel('Sample index');
+ylabel('Amplitude');
+
 
 %% Frequency analysis of Decimated Output
 % Parameters for the Decimated Signal
@@ -272,16 +286,13 @@ p1 = plot(f_axis/1e3, X_db, 'b', 'LineWidth', 1);
 p2 = plot(f_dec_axis/1e3, X_db_dec, 'r', 'LineWidth', 2);
 lx = xline(fx/1e3, '--g', 'LineWidth', 1.5);
 lb = xline(fB/1e3, '--k', 'LineWidth', 2);
-[~, peak_idx] = max(X_mag_dec);
-ps = plot(f_dec_axis(peak_idx)/1e3, X_db_dec(peak_idx), 'go', 'MarkerSize', 10, 'LineWidth', 2);
 
-legend([p1, p2, lx, lb, ps], ...
-    {'Raw DSM Bitstream (Noise Shaped)', ...
-     'Decimated Output (Filtered)', ...
+legend([p1, p2, lx, lb], ...
+    {'DSM Bitstream', ...
+     'Decimated Output', ...
      'Input Signal Frequency', ...
-     'Signal Bandwidth (fB)', ...
-     'Fundamental Peak'}, ...
-    'Location', 'southwest', 'FontSize', 9);
+     'Signal Bandwidth (fB)'}, ...
+    'Location', 'southeast', 'FontSize', 9);
 grid on;
 set(gca, 'XScale', 'log'); 
 xlim([0.1 fs/2e3]); 

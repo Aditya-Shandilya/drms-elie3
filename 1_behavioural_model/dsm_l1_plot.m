@@ -7,60 +7,36 @@ close all;
 L=1;
 form='CIFB';
 fs = 1e6;               % Sampling frequency
-Ts = 1/fs;              % Time step
+Ts = 1/fs;              % Sample Time
 M  = 512;               % Oversampling Ratio
-N  = 64*M;              % Simulation length
-cycles = 5;            % Number of signal cycles 
+N  = 64*M;              % Number of Samples
+cycles = 5;             % Number of signal cycles 
 A  = 0.8;               % Signal amplitude
 offset = 0;
-
 
 fx = cycles * fs / N;   % Input frequency 
 fB = fs / (2 * M);      % Signal Bandwidth
 
 OLgain = 1000;        % Open Loop Gain
-%a = 1;                % Feedforward
-%b = [1 1];            % Feedback
-%c = 1;                % Integrator
 
 %%Calculating the coefficients
-H = synthesizeNTF(L, M);
+H = synthesizeNTF(L, M);             %noise transfer function
 [a, g, b, c] = realizeNTF(H, form);
 b(2:end) = 0;
 ABCD = stuffABCD(a, g, b, c, form);
-[ABCDs umax] = scaleABCD(ABCD);   %coefficients are scaled for hardware implementation
+[ABCDs umax] = scaleABCD(ABCD);       %coefficients are scaled for hardware implementation
 [a, g, b, c] = mapABCD(ABCDs, form);
+fprintf('Coefficient a:      %d \n', a);
+fprintf('Coefficient b:      %d \n', b);
+fprintf('Coefficient c:      %d \n', c);
+fprintf('Coefficient g:      %d \n', g);
 
-%%Pole Zero Plot using NTF
-figure('Name', 'NTF Characteristics', 'Color', 'w');
-
-% Plot 1: Pole-Zero Map
-subplot(1,2,1);
-% Extract numerator (zeros) and denominator (poles) from the NTF object
-[zeros_ntf, poles_ntf] = zpkdata(H, 'v'); 
-zplane(zeros_ntf, poles_ntf); 
-grid on;
-title('NTF Pole-Zero Map');
-
-% Plot 2: Magnitude Response of the NTF
-subplot(1,2,2);
-f_plot = linspace(0, 0.5, 1000); % Normalized frequency
-% Calculate frequency response
-H_f = evalTF(H, exp(2j*pi*f_plot));
-semilogx(f_plot*fs/1e3, 20*log10(abs(H_f)), 'b', 'LineWidth', 2);
-grid on;
-xline(fB/1e3, '--r', 'Bandwidth');
-xlabel('Frequency (kHz)');
-ylabel('Magnitude (dB)');
-title('NTF Magnitude Response');
-
-%% This section forces Simulink to use our fs and fx
+%% This section forces Simulink to use this fs and fx
 modelName = 'dsm_l1_sim';
 load_system(modelName);
 %open_system(modelName);
 
-%This section was added because sine block in simulink was not giving
-%correct result. Here, the sine block is overwritten by Freq, SampleTime
+%Sine block is overwritten by Freq, SampleTime
 %and Amplitude in MATLAB code.
 
 sineBlock = find_system(modelName, 'BlockType', 'Sin');
@@ -75,13 +51,12 @@ if ~isempty(filterBlock)
     set_param(filterBlock{1}, 'SampleTime', num2str(Ts));
 end
 
-%% Run Simulation
 T_stop = (N-1) * Ts;
 
 % Simulation input object
 in = Simulink.SimulationInput(modelName);
 
-% Explicitly push variables into the simulation's scope
+% Explicitly push variables into the simulation.
 in = in.setVariable('OLgain', OLgain);
 in = in.setVariable('a', a);
 in = in.setVariable('b', b);
@@ -89,30 +64,23 @@ in = in.setVariable('c', c);
 in = in.setVariable('g', g);
 in = in.setVariable('SamplingFrequency', fs);
 
-% Set the stop time via the object
+% Setting stop time
 in = in.setModelParameter('StopTime', num2str(T_stop));
 
 simOut = sim(in);
 logs = simOut.logsout;
 
-% Extract outputs
+% Extractsignals from Simulink
 dsmOut = simOut.yout.get('dsmOut').Values.Data;
 filterOut = simOut.yout.get('filterOut').Values.Data;
 quantOut = simOut.yout.get('quantOut').Values.Data;
-
-% Extract samples, convert "3-D" signals to "1-D" vector
 u   = squeeze(logs.getElement('inputLog').Values.Data);
-%y   = squeeze(logs.getElement('filterLog').Values.Data);
-%v   = squeeze(logs.getElement('quantLog').Values.Data);
-%dsm = squeeze(logs.getElement('dsmLog').Values.Data);
 t   = logs.getElement('inputLog').Values.Time;
 
 % Calculate points to plot to show ~1.5ms (trying to zoom-in)
-N_plot = ceil(1.7e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
+N_plot = ceil(6.7e-3 * fs); % Number of samples= Time (1.5ms) * Sample frequency (fs)
 if length(t) < N_plot, N_plot = length(t); end
-
-%Using values till N_plot for better graph visualisation
-t1   = t(1:N_plot);
+t1   = t(1:N_plot);    %Using values till N_plot for better graph visualisation
 filterOut1   = filterOut(1:N_plot);
 dsmOut1   = dsmOut(1:N_plot);
 quantOut1   = quantOut(1:N_plot);
@@ -120,12 +88,10 @@ u1 = u(1:N_plot);
 
 %% Plotting 
 figure('Name', 'Delta Sigma modulator', 'Color', 'w');
-
 plot(t1, filterOut1, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Loop Filter'); 
 hold on;
 stairs(t1, quantOut1, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Comparator');
 plot(t1, u1, 'b-', 'LineWidth', 2.5, 'DisplayName', 'Input Signal');
-
 grid on;
 title('Delta Sigma modulator (Simulink Output)');
 xlabel('Time (s)');
@@ -134,15 +100,26 @@ legend('show', 'Location', 'northeast');
 ylim([-2 2]);
 xlim([0 t1(end)]);
 
-%figure('Name', 'Delta Sigma modulator Output', 'Color', 'w');
-%plot(t1, dsm1, 'g-', 'LineWidth', 1.5, 'DisplayName', 'DSM'); 
-%grid on;
-%title('Delta Sigma modulator (Simulink Output)');
-%xlabel('Time (s)');
-%ylabel('DSM');
-%legend('show', 'Location', 'northeast');
-%ylim([-2 2]);
-%xlim([0 t1(end)]);
+%%Pole Zero Plot using NTF
+figure('Name', 'NTF Characteristics', 'Color', 'w');
+% Pole-Zero Map
+subplot(1,2,1);
+[zeros_ntf, poles_ntf] = zpkdata(H, 'v'); 
+zplane(zeros_ntf, poles_ntf); 
+grid on;
+title('NTF Pole-Zero Map');
+
+% Magnitude Response of the NTF
+subplot(1,2,2);
+f_plot = linspace(0, 0.5, 1000); % Normalized frequency
+% Calculate frequency response
+H_f = evalTF(H, exp(2j*pi*f_plot));
+semilogx(f_plot*fs/1e3, 20*log10(abs(H_f)), 'b', 'LineWidth', 2);
+grid on;
+xline(fB/1e3, '--r', 'Bandwidth');
+xlabel('Frequency (kHz)');
+ylabel('Magnitude (dB)');
+title('NTF Magnitude Response');
 
 %% Spectral Analysis & SNR Calculation (Using Hann Windowing)
 
@@ -153,18 +130,13 @@ dsm_windowed = dsmOut .* w;
 % FFT Calculation
 % Calculate normalization factor for window
 norm_factor = sum(w); 
-
-% Compute FFT and convert to Magnitude
-X = abs(fft(dsm_windowed));
+X = abs(fft(dsm_windowed));  % Compute FFT 
 X_mag = X(1:N/2) * 2 / norm_factor; % Single-sided magnitude spectrum
-X_db  = 20*log10(X_mag);
+X_db  = 20*log10(X_mag);   %magnitude in dB
 
 % SNR Calculation (In-Band)
-% Signal Bin (DC is bin 1, Fundamental is bin 1+cycles)
-bin_sig = 1 + cycles;
-
-% Bandwidth Bin (Limit for In-Band Noise)
-bin_bw  = floor(fB * N / fs);
+bin_sig = 1 + cycles;  % Signal Bin (DC is bin 1, Fundamental is bin 1+cycles)
+bin_bw  = floor(fB * N / fs); % Bandwidth Bin (Limit for In-Band Noise)
 
 % Define Noise Bins: From DC+1 up to Bandwidth, EXCLUDING signal bin
 span = 1; 
@@ -186,11 +158,7 @@ fprintf('Signal Power:      %.2f dB\n', 10*log10(P_signal));
 fprintf('In-Band Noise:     %.2f dB\n', 10*log10(P_noise));
 fprintf('CALCULATED SNR:    %.2f dB\n', SNR_dB);
 
-fprintf('Coefficient a:      %d \n', a);
-fprintf('Coefficient b:      %d \n', b);
-fprintf('Coefficient c:      %d \n', c);
-fprintf('Coefficient g:      %d \n', g);
-
+%Plotting DSM PSD
 f_axis = (0:N/2-1) * (fs / N);
 figure('Name', 'DSM Power Spectral Density');
 semilogx(f_axis, X_db, 'b');
@@ -198,8 +166,19 @@ hold on;
 xline(fB, '--r', 'LineWidth', 2, 'Label', 'Bandwidth');
 xline(fx, '--g', 'LineWidth', 1.5, 'Label', 'Signal');
 grid on;
-xlim([f_axis(2) fs/2]); % Plot from first bin to Nyquist
-ylim([-160 10]);
 title(['PSD (SNR = ' num2str(SNR_dB, '%.1f') ' dB, OSR = ' num2str(M) ')']);
 xlabel('Frequency (Hz)');
 ylabel('Magnitude (dB)');
+xlim([f_axis(2) fs/2]); % Plot from first bin to Nyquist
+ylim([-160 10]);
+
+
+f = [0:N/2-1]/N;
+% Generate the magnitude plot with annotation
+figure('Name', 'Frequency Analysis');
+set(gca, 'fontsize', 14);
+plot(f, X_db);
+axis([0 0.06 -150 0]);
+xlabel('Frequency f/fs')
+ylabel('DFT Magnitude in dBFS')
+grid;
