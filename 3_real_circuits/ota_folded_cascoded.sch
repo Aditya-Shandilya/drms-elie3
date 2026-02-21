@@ -105,7 +105,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} -160 -290 0 1 {name=M10
 l=1u
-w=8u
+w=8.5u
 ng=1
 m=1
 model=sg13_hv_pmos
@@ -121,7 +121,7 @@ spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_pmos.sym} 160 -290 0 0 {name=M11
 l=1u
-w=8u
+w=8.5u
 ng=1
 m=1
 model=sg13_hv_pmos
@@ -176,7 +176,7 @@ model=sg13_hv_nmos
 spiceprefix=X
 }
 C {sg13g2_pr/sg13_hv_nmos.sym} -20 170 0 0 {name=M3
-l=1.5u
+l=1.0u
 w=2.5u
 ng=1
 m=1
@@ -199,3 +199,14 @@ C {ngspice_probe.sym} 0 0 0 0 {name=r2}
 C {ngspice_probe.sym} 180 -230 0 0 {name=r3}
 C {ngspice_probe.sym} -180 110 0 0 {name=r4}
 C {ngspice_probe.sym} 180 120 0 0 {name=r5}
+C {ngspice_get_value.sym} -190 -200 0 1 {name=r6 node=i(@n.x1.xm8.nsg13_hv_pmos[ids])}
+C {ngspice_get_value.sym} -190 -310 0 1 {name=r7 node=i(@n.x1.xm10.nsg13_hv_pmos[ids])}
+C {ngspice_get_value.sym} 190 -310 0 0 {name=r8 node=i(@n.x1.xm11.nsg13_hv_pmos[ids])}
+C {ngspice_get_value.sym} 190 -200 0 0 {name=r9 node=i(@n.x1.xm9.nsg13_hv_pmos[ids])}
+C {ngspice_get_value.sym} 100 -80 0 0 {name=r10 node=i(@n.x1.xm2.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} -100 -80 0 1 {name=r11 node=i(@n.x1.xm1.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} -230 60 0 1 {name=r12 node=i(@n.x1.xm6.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} 230 60 0 0 {name=r13 node=i(@n.x1.xm7.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} 230 160 0 0 {name=r14 node=i(@n.x1.xm5.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} -230 160 0 1 {name=r15 node=i(@n.x1.xm4.nsg13_hv_nmos[ids])}
+C {ngspice_get_value.sym} 10 140 0 0 {name=r16 node=i(@n.x1.xm3.nsg13_hv_nmos[ids])}
