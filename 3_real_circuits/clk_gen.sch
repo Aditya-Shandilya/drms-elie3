@@ -47,23 +47,23 @@ N 510 260 530 260 {lab=phi2_d}
 N 530 -20 530 30 {lab=phi1_d}
 N 510 -20 530 -20 {lab=phi1_d}
 N 440 150 530 30 {lab=phi1_d}
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} -50 0 0 0 {name=x1 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} -50 240 0 0 {name=x2 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} 350 -20 0 0 {name=x3 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} 340 260 0 0 {name=x4 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} -200 260 0 0 {name=x5 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 40 150 0 1 {name=x6 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 40 80 0 1 {name=x7 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 90 240 0 0 {name=x8 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 210 240 0 0 {name=x9 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 90 0 0 0 {name=x10 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} 210 0 0 0 {name=x11 VDD=VDD VSS=VSS prefix=sg13g2_ }
 C {ipin.sym} -290 -20 0 0 {name=p1 lab=CK}
-C {sg13g2_stdcells/sg13g2_buf_1.sym} 470 -120 0 0 {name=x12 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_buf_1.sym} 470 -20 0 0 {name=x13 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_buf_1.sym} 470 260 0 0 {name=x14 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_buf_1.sym} 470 340 0 0 {name=x15 VDD=VDD VSS=VSS prefix=sg13g2_ }
 C {opin.sym} 550 -120 0 0 {name=p2 lab=phi1}
 C {opin.sym} 550 -20 0 0 {name=p3 lab=phi1_d}
 C {opin.sym} 550 260 0 0 {name=p4 lab=phi2_d}
 C {opin.sym} 550 340 0 0 {name=p5 lab=phi2}
+C {nand_gate.sym} -60 0 0 0 {name=x1}
+C {nand_gate.sym} 340 -20 0 0 {name=x2}
+C {nand_gate.sym} -60 240 0 0 {name=x3}
+C {nand_gate.sym} 330 260 0 0 {name=x4}
+C {inverter.sym} -200 260 0 0 {name=x5}
+C {inverter.sym} 90 240 0 0 {name=x6}
+C {inverter.sym} 210 240 0 0 {name=x7}
+C {inverter.sym} 90 0 0 0 {name=x8}
+C {inverter.sym} 210 0 0 0 {name=x9}
+C {inverter.sym} 40 80 0 1 {name=x10}
+C {inverter.sym} 40 150 0 1 {name=x11}
+C {buffer.sym} 470 -120 0 0 {name=x12}
+C {buffer.sym} 470 -20 0 0 {name=x13}
+C {buffer.sym} 470 260 0 0 {name=x14}
+C {buffer.sym} 470 340 0 0 {name=x15}
