@@ -18,10 +18,10 @@ N -110 100 -60 100 {lab=#net3}
 N -200 -70 -190 -70 {lab=S}
 N -200 100 -190 100 {lab=R}
 N 60 -50 70 -50 {lab=Q}
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} 0 -50 0 0 {name=x1 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_nand2_1.sym} 0 80 0 0 {name=x2 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} -150 -70 0 0 {name=x3 VDD=VDD VSS=VSS prefix=sg13g2_ }
-C {sg13g2_stdcells/sg13g2_inv_1.sym} -150 100 0 0 {name=x4 VDD=VDD VSS=VSS prefix=sg13g2_ }
 C {devices/ipin.sym} -200 -70 0 0 {name=p29 lab=S}
 C {devices/ipin.sym} -200 100 0 0 {name=p1 lab=R}
 C {opin.sym} 70 -50 0 0 {name=p2 lab=Q}
+C {inverter.sym} -150 100 0 0 {name=x2}
+C {nand_gate.sym} -10 -50 0 0 {name=x3}
+C {inverter.sym} -150 -70 0 0 {name=x1}
+C {nand_gate.sym} -10 80 0 0 {name=x5}
